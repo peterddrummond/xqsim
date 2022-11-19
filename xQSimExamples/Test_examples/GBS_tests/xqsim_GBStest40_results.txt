@@ -1,0 +1,1204 @@
+function e1 = xqsim_batchtest40( )
+%Batch testing script for xqsim program
+%Matrix size      = 40*40
+%Sequence length  = 12
+%Total tests      = 68
+%Total graphs     = 152
+%Chi-square error = 1.0 +/- 0.2
+%Typical timing   = 1400s
+
+p.matrix     = @Identity;                        %matrix type
+p.M          = 40;                               %matrix size m
+p.N          = 40;                               %input size n
+p.name       = sprintf('+P non-uniform squeezed, M=%d',p.M); 
+p.t          = 0.5;                              %transmission
+I            = ones(1,p.M/5);                    %identity vector
+p.r          = [I/4,2*I,4*I,I/2,I];              %nonuniform squeezing
+p.eps        = zeros(1,p.M);                     %decoherence factor 
+p.O{4}       = 1:5;                              %correlation order 
+p.O{6}       = 1:5;                              %click order 
+p.Part{7}    = p.M;                              %One-fold partititon 
+p.Part{8}    = [p.M/2, p.M/2];                   %Two-fold partititon    
+p.Part{9}    = [p.M/4, p.M/4,p.M/4, p.M/4];      %Four-fold partition
+p.logs{9}    = [0,0,0,0,1];                      %Logs of data 
+p.ensembles  = [1000,100,12];                    %repeats for errors
+p.cutoff     = 1.e-7;
+p.observe    = {@n,@x2,@y2,@nm,@k,@km,@k1,@kn,@kn};
+p.compare    = {@nc,@x2c,@y2c,@nmc,@kc,@kmc,@k1c,@knc,@knc};
+p.glabels    = {{'Mode j'},{'Mode j'},{'Mode j'},{'Order'},...
+               {'Mode j'},{'Clicks m'},{'Clicks m_1','Clicks m_2'},...
+               {'Clicks m_1','Clicks m_2','Clicks m_3','Clicks m_4'}};
+p.olabels    = {'<n>','<X^2>','<Y^2>','<n_1...n_j>','<G^{(1)}>',...
+               '<G^{(n)}>','G_1(m)','G_2(m)','G_4(m)'};
+p.diffplot   = {2,2,2,2,2,2,2,2,2};
+p.xk{4}      = p.O(4);
+p.xk{6}      = p.O(6);
+p.xk{7}      = {0:p.M};
+p.xk{8}      = {0:p.M/2,0:p.M/2};
+p.xk{9}      = {0:p.M/4,0:p.M/4,0:p.M/4,0:p.M/4};
+
+p1           = p;
+p1.eps       = 0.5*ones(1,p.M);                  %decoherence factor
+p1.name      = sprintf('+P non-uniform thermalized, M=%d',p.M); %test name
+
+p2           = p;
+p2.r         = ones(1,p.M);
+p2.eps       = zeros(1,p.M);                     %decoherence factor
+p2.name      = sprintf('+P uniform squeezed, M=%d',p.M);     %test name
+
+p3           = p;
+p3.r         = ones(1,p.M);
+p3.eps       = ones(1,p.M);                      %decoherence factor
+p3.matrix    = @Unitary;                         %random unitary
+p3.name      = sprintf('+P  unitary thermal, M=%d',p.M);      %test name
+
+pW           = p;
+pW.graphs    = 4;
+pW.method    = 2; 
+pW.name      = sprintf('W non-uniform squeezed, M=%d',p.M);  %test name
+
+p1W          = p1;
+p1W.graphs   = 4;
+p1W.method   = 2;                              
+p1W.name     = sprintf('W non-uniform thermalized, M=%d',p.M);%test name
+
+p2W          = p2;
+p2W.graphs   = 4;
+p2W.method   = 2;                                 
+p2W.name     = sprintf('W uniform squeezed, M=%d',p.M);      %test name
+
+p3W          = p3;
+p3W.graphs   = 4;
+p3W.method   = 2;                              
+p3W.name     = sprintf('W unitary thermal, M=%d',p.M);       %test name
+
+pQ           = p;
+pQ.graphs    = 4;
+pQ.method    = 3; 
+pQ.name      = sprintf('Q non-uniform squeezed, M=%d',p.M);  %test name
+
+p1Q          = p1;
+p1Q.graphs   = 4;
+p1Q.method   = 3;                              
+p1Q.name     = sprintf('Q non-uniform thermalized, M=%d',p.M);%test name
+
+p2Q          = p2;
+p2Q.graphs   = 4;
+p2Q.method   = 3;                                 
+p2Q.name     = sprintf('Q uniform squeezed, M=%d',p.M);      %test name
+
+p3Q          = p3;
+p3Q.graphs   = 4;
+p3Q.method   = 3;                              
+p3Q.name     = sprintf('Q unitary thermal, M=%d',p.M);       %test name
+
+[e1,d,cp]    = xqsim({p,p1,p2,p3,pW,p1W,p2W,p3W,pQ,p1Q,p2Q,p3Q});
+save xqsimtest.mat d cp
+xgraph(d,cp);
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+RESULTS:
+
+
+Dataset 1
++P  phase-space method
+40 x 40 identity matrix
+Input size = 40
+
+Dataset 1, Graph 1, <n>
+
+Max samp. error = 2.460821e-01 
+Max diff. error = 5.500448e-01 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 3.802837e+01
+
+Dataset 1, Graph 2, <X^2>
+
+Max samp. error = 9.843341e-01 
+Max diff. error = 2.200311e+00 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 3.700685e+01
+
+Dataset 1, Graph 3, <Y^2>
+
+Max samp. error = 3.323265e-04 
+Max diff. error = 7.401919e-04 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 3.281867e+01
+
+Dataset 1, Graph 4, <n_1...n_j>
+
+Max samp. error = 6.121941e-05 
+Max diff. error = 3.736018e-05 
+Max comp. error = 0 
+Chi-square points = 3 
+Chi-square error = 1.170864e+00
+
+Dataset 1, Graph 5, <G^{(1)}>
+
+Max samp. error = 3.692371e-04 
+Max diff. error = 6.552779e-04 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 3.556828e+01
+
+Dataset 1, Graph 6, <G^{(n)}>
+
+Max samp. error = 5.828691e-05 
+Max diff. error = 3.643059e-05 
+Max comp. error = 0 
+Chi-square points = 3 
+Chi-square error = 1.274637e+00
+
+Dataset 1, Graph 7, G_1(m)
+
+Max samp. error = 1.030926e-04 
+Max diff. error = 1.320161e-04 
+Max comp. error = 0 
+Chi-square points = 22 
+Chi-square error = 3.663895e+01
+
+Dataset 1, Graph 8, G_2(m)
+
+Max samp. error = 5.786634e-05 
+Max diff. error = 3.883705e-05 
+Max comp. error = 0 
+Chi-square points = 169 
+Chi-square error = 2.637579e+02
+
+Dataset 1, Graph 9, G_4(m)
+
+Max samp. error = 3.540581e-05 
+Max diff. error = 5.031015e-05 
+Max comp. error = 0 
+Chi-square points = 2083 
+Chi-square error = 2.599446e+03
+
+Dataset 2
++P  phase-space method
+40 x 40 identity matrix
+Input size = 40
+
+Dataset 2, Graph 1, <n>
+
+Max samp. error = 1.928079e-01 
+Max diff. error = 3.056043e-01 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 3.795372e+01
+
+Dataset 2, Graph 2, <X^2>
+
+Max samp. error = 7.313939e-01 
+Max diff. error = 9.167307e-01 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 4.292811e+01
+
+Dataset 2, Graph 3, <Y^2>
+
+Max samp. error = 2.497235e-01 
+Max diff. error = 3.985638e-01 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 3.660454e+01
+
+Dataset 2, Graph 4, <n_1...n_j>
+
+Max samp. error = 3.417691e-05 
+Max diff. error = 1.781995e-05 
+Max comp. error = 0 
+Chi-square points = 3 
+Chi-square error = 2.489460e+00
+
+Dataset 2, Graph 5, <G^{(1)}>
+
+Max samp. error = 2.701766e-04 
+Max diff. error = 3.773312e-04 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 4.178502e+01
+
+Dataset 2, Graph 6, <G^{(n)}>
+
+Max samp. error = 3.243412e-05 
+Max diff. error = 1.775095e-05 
+Max comp. error = 0 
+Chi-square points = 3 
+Chi-square error = 2.212038e+00
+
+Dataset 2, Graph 7, G_1(m)
+
+Max samp. error = 6.702516e-05 
+Max diff. error = 1.372043e-04 
+Max comp. error = 0 
+Chi-square points = 20 
+Chi-square error = 6.399547e+01
+
+Dataset 2, Graph 8, G_2(m)
+
+Max samp. error = 3.989052e-05 
+Max diff. error = 6.103035e-05 
+Max comp. error = 0 
+Chi-square points = 140 
+Chi-square error = 2.686952e+02
+
+Dataset 2, Graph 9, G_4(m)
+
+Max samp. error = 2.784226e-05 
+Max diff. error = 4.554238e-05 
+Max comp. error = 0 
+Chi-square points = 1588 
+Chi-square error = 2.414434e+03
+
+Dataset 3
++P  phase-space method
+40 x 40 identity matrix
+Input size = 40
+
+Dataset 3, Graph 1, <n>
+
+Max samp. error = 5.432931e-04 
+Max diff. error = 1.276045e-03 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 3.795283e+01
+
+Dataset 3, Graph 2, <X^2>
+
+Max samp. error = 2.153912e-03 
+Max diff. error = 5.100665e-03 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 3.856300e+01
+
+Dataset 3, Graph 3, <Y^2>
+
+Max samp. error = 2.903744e-04 
+Max diff. error = 5.249190e-04 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 2.951423e+01
+
+Dataset 3, Graph 4, <n_1...n_j>
+
+Max samp. error = 5.105094e-04 
+Max diff. error = 6.983931e-04 
+Max comp. error = 0 
+Chi-square points = 5 
+Chi-square error = 4.124983e+00
+
+Dataset 3, Graph 5, <G^{(1)}>
+
+Max samp. error = 2.624792e-04 
+Max diff. error = 7.248319e-04 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 3.252488e+01
+
+Dataset 3, Graph 6, <G^{(n)}>
+
+Max samp. error = 2.470112e-04 
+Max diff. error = 1.178311e-04 
+Max comp. error = 0 
+Chi-square points = 5 
+Chi-square error = 9.473726e-01
+
+Dataset 3, Graph 7, G_1(m)
+
+Max samp. error = 6.864983e-05 
+Max diff. error = 9.457801e-05 
+Max comp. error = 0 
+Chi-square points = 24 
+Chi-square error = 2.340686e+01
+
+Dataset 3, Graph 8, G_2(m)
+
+Max samp. error = 2.723238e-05 
+Max diff. error = 5.233613e-05 
+Max comp. error = 0 
+Chi-square points = 202 
+Chi-square error = 2.588548e+02
+
+Dataset 3, Graph 9, G_4(m)
+
+Max samp. error = 7.130049e-06 
+Max diff. error = 1.200025e-05 
+Max comp. error = 0 
+Chi-square points = 4176 
+Chi-square error = 4.274570e+03
+
+Dataset 4
++P  phase-space method
+40 x 40 complex unitary matrix
+Input size = 40
+
+Dataset 4, Graph 1, <n>
+
+Max samp. error = 3.336329e-04 
+Max diff. error = 6.845798e-04 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 4.305445e+01
+
+Dataset 4, Graph 2, <X^2>
+
+Max samp. error = 9.405477e-04 
+Max diff. error = 1.855139e-03 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 3.609166e+01
+
+Dataset 4, Graph 3, <Y^2>
+
+Max samp. error = 9.263850e-04 
+Max diff. error = 2.254418e-03 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 5.625397e+01
+
+Dataset 4, Graph 4, <n_1...n_j>
+
+Max samp. error = 3.191234e-04 
+Max diff. error = 3.036224e-04 
+Max comp. error = 0 
+Chi-square points = 5 
+Chi-square error = 4.785099e+00
+
+Dataset 4, Graph 5, <G^{(1)}>
+
+Max samp. error = 1.914786e-04 
+Max diff. error = 4.622355e-04 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 4.511068e+01
+
+Dataset 4, Graph 6, <G^{(n)}>
+
+Max samp. error = 1.813741e-04 
+Max diff. error = 1.631416e-04 
+Max comp. error = 0 
+Chi-square points = 5 
+Chi-square error = 4.999448e+00
+
+Dataset 4, Graph 7, G_1(m)
+
+Max samp. error = 3.869703e-05 
+Max diff. error = 5.064608e-05 
+Max comp. error = 0 
+Chi-square points = 27 
+Chi-square error = 3.860107e+01
+
+Dataset 4, Graph 8, G_2(m)
+
+Max samp. error = 1.268425e-05 
+Max diff. error = 1.918374e-05 
+Max comp. error = 0 
+Chi-square points = 235 
+Chi-square error = 1.858348e+02
+
+Dataset 4, Graph 9, G_4(m)
+
+Max samp. error = 2.552253e-06 
+Max diff. error = 4.730417e-06 
+Max comp. error = 0 
+Chi-square points = 5509 
+Chi-square error = 5.196583e+03
+
+Dataset 5
+W  phase-space method
+40 x 40 identity matrix
+Input size = 40
+
+Dataset 5, Graph 1, <n>
+
+Max samp. error = 2.498156e-01 
+Max diff. error = 3.897227e-01 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 4.142125e+01
+
+Dataset 5, Graph 2, <X^2>
+
+Max samp. error = 9.992370e-01 
+Max diff. error = 1.558454e+00 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 3.799112e+01
+
+Dataset 5, Graph 3, <Y^2>
+
+Max samp. error = 1.199426e-03 
+Max diff. error = 2.315240e-03 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 3.582978e+01
+
+Dataset 5, Graph 4, <n_1...n_j>
+
+Max samp. error = 4.838373e-04 
+Max diff. error = 7.549157e-04 
+Max comp. error = 0 
+Chi-square points = 3 
+Chi-square error = 3.890593e+00
+
+Dataset 6
+W  phase-space method
+40 x 40 identity matrix
+Input size = 40
+
+Dataset 6, Graph 1, <n>
+
+Max samp. error = 1.957120e-01 
+Max diff. error = 2.834658e-01 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 3.258486e+01
+
+Dataset 6, Graph 2, <X^2>
+
+Max samp. error = 7.398746e-01 
+Max diff. error = 1.134497e+00 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 3.771940e+01
+
+Dataset 6, Graph 3, <Y^2>
+
+Max samp. error = 2.501276e-01 
+Max diff. error = 2.388882e-01 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 2.119052e+01
+
+Dataset 6, Graph 4, <n_1...n_j>
+
+Max samp. error = 4.554162e-04 
+Max diff. error = 1.351629e-04 
+Max comp. error = 0 
+Chi-square points = 3 
+Chi-square error = 3.136113e-01
+
+Dataset 7
+W  phase-space method
+40 x 40 identity matrix
+Input size = 40
+
+Dataset 7, Graph 1, <n>
+
+Max samp. error = 9.039668e-04 
+Max diff. error = 1.896468e-03 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 4.367654e+01
+
+Dataset 7, Graph 2, <X^2>
+
+Max samp. error = 3.465158e-03 
+Max diff. error = 7.131410e-03 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 3.470280e+01
+
+Dataset 7, Graph 3, <Y^2>
+
+Max samp. error = 1.058946e-03 
+Max diff. error = 2.990741e-03 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 5.313650e+01
+
+Dataset 7, Graph 4, <n_1...n_j>
+
+Max samp. error = 9.837286e-04 
+Max diff. error = 6.941052e-04 
+Max comp. error = 0 
+Chi-square points = 5 
+Chi-square error = 1.098872e+00
+
+Dataset 8
+W  phase-space method
+40 x 40 complex unitary matrix
+Input size = 40
+
+Dataset 8, Graph 1, <n>
+
+Max samp. error = 8.019510e-04 
+Max diff. error = 2.445079e-03 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 4.231946e+01
+
+Dataset 8, Graph 2, <X^2>
+
+Max samp. error = 2.290923e-03 
+Max diff. error = 5.752452e-03 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 4.658775e+01
+
+Dataset 8, Graph 3, <Y^2>
+
+Max samp. error = 2.250822e-03 
+Max diff. error = 4.647947e-03 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 3.661847e+01
+
+Dataset 8, Graph 4, <n_1...n_j>
+
+Max samp. error = 7.672948e-04 
+Max diff. error = 1.015661e-03 
+Max comp. error = 0 
+Chi-square points = 5 
+Chi-square error = 5.006025e+00
+
+Dataset 9
+Q  phase-space method
+40 x 40 identity matrix
+Input size = 40
+
+Dataset 9, Graph 1, <n>
+
+Max samp. error = 2.443299e-01 
+Max diff. error = 3.186224e-01 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 3.234754e+01
+
+Dataset 9, Graph 2, <X^2>
+
+Max samp. error = 9.772795e-01 
+Max diff. error = 1.272824e+00 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 3.493991e+01
+
+Dataset 9, Graph 3, <Y^2>
+
+Max samp. error = 2.525555e-03 
+Max diff. error = 5.219363e-03 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 4.313713e+01
+
+Dataset 9, Graph 4, <n_1...n_j>
+
+Max samp. error = 9.497064e-04 
+Max diff. error = 1.359260e-03 
+Max comp. error = 0 
+Chi-square points = 3 
+Chi-square error = 2.189562e+00
+
+Dataset 10
+Q  phase-space method
+40 x 40 identity matrix
+Input size = 40
+
+Dataset 10, Graph 1, <n>
+
+Max samp. error = 1.966208e-01 
+Max diff. error = 2.659967e-01 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 3.573199e+01
+
+Dataset 10, Graph 2, <X^2>
+
+Max samp. error = 7.488746e-01 
+Max diff. error = 8.570695e-01 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 3.972413e+01
+
+Dataset 10, Graph 3, <Y^2>
+
+Max samp. error = 2.470984e-01 
+Max diff. error = 4.278504e-01 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 3.238659e+01
+
+Dataset 10, Graph 4, <n_1...n_j>
+
+Max samp. error = 9.627316e-04 
+Max diff. error = 1.686659e-03 
+Max comp. error = 0 
+Chi-square points = 3 
+Chi-square error = 6.860147e-01
+
+Dataset 11
+Q  phase-space method
+40 x 40 identity matrix
+Input size = 40
+
+Dataset 11, Graph 1, <n>
+
+Max samp. error = 1.361867e-03 
+Max diff. error = 2.179231e-03 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 2.472089e+01
+
+Dataset 11, Graph 2, <X^2>
+
+Max samp. error = 4.843570e-03 
+Max diff. error = 7.172996e-03 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 2.201075e+01
+
+Dataset 11, Graph 3, <Y^2>
+
+Max samp. error = 2.378518e-03 
+Max diff. error = 5.930630e-03 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 3.446307e+01
+
+Dataset 11, Graph 4, <n_1...n_j>
+
+Max samp. error = 5.982655e-03 
+Max diff. error = 4.010879e-03 
+Max comp. error = 0 
+Chi-square points = 5 
+Chi-square error = 1.993696e+00
+
+Dataset 12
+Q  phase-space method
+40 x 40 complex unitary matrix
+Input size = 40
+
+Dataset 12, Graph 1, <n>
+
+Max samp. error = 1.276967e-03 
+Max diff. error = 2.452874e-03 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 2.949218e+01
+
+Dataset 12, Graph 2, <X^2>
+
+Max samp. error = 3.650631e-03 
+Max diff. error = 7.692224e-03 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 3.726754e+01
+
+Dataset 12, Graph 3, <Y^2>
+
+Max samp. error = 3.668068e-03 
+Max diff. error = 9.268740e-03 
+Max comp. error = 0 
+Chi-square points = 40 
+Chi-square error = 3.118609e+01
+
+Dataset 12, Graph 4, <n_1...n_j>
+
+Max samp. error = 4.407234e-03 
+Max diff. error = 3.813857e-03 
+Max comp. error = 0 
+Chi-square points = 5 
+Chi-square error = 2.486255e+00
+
+Summary of all 12 qSIM datasets
+Max sampling error = 9.992370e-01 
+Max difference error = 2.200311e+00 
+Max comparison error = 0 
+Mean chi-square error = 1.081243e+00 
+Simulation time = 1336.866261 
+
+
+
+xGRAPH, v3.4
+
+Dataset 1: +P non-uniform squeezed, M=40
+
++P non-uniform squeezed, M=40 1#1 
+Chi-sq. error = 3.802837e+01
+Chi-sq. points = 40 
+2D plot in graph 1
+2D plot in graph 1
+
++P non-uniform squeezed, M=40 1#2 
+Chi-sq. error = 3.700685e+01
+Chi-sq. points = 40 
+2D plot in graph 2
+2D plot in graph 2
+
++P non-uniform squeezed, M=40 1#3 
+Chi-sq. error = 3.281867e+01
+Chi-sq. points = 40 
+2D plot in graph 3
+2D plot in graph 3
+
++P non-uniform squeezed, M=40 1#4 
+Chi-sq. error = 1.170864e+00
+Chi-sq. points = 3 
+2D plot in graph 4
+2D plot in graph 4
+
++P non-uniform squeezed, M=40 1#5 
+Chi-sq. error = 3.556828e+01
+Chi-sq. points = 40 
+2D plot in graph 5
+2D plot in graph 5
+
++P non-uniform squeezed, M=40 1#6 
+Chi-sq. error = 1.274637e+00
+Chi-sq. points = 3 
+2D plot in graph 6
+2D plot in graph 6
+
++P non-uniform squeezed, M=40 1#7 
+Chi-sq. error = 3.663895e+01
+Chi-sq. points = 22 
+2D plot in graph 7
+2D plot in graph 7
+
++P non-uniform squeezed, M=40 1#8 
+Chi-sq. error = 2.637579e+02
+Chi-sq. points = 169 
+3D plot in graph 8
+Lattice reduced: Clicks m_2 = 10
+2D plot in graph 8
+3D plot in graph 8
+Lattice reduced: Clicks m_2 = 10
+2D plot in graph 8
+
++P non-uniform squeezed, M=40 1#9 
+Chi-sq. error = 2.491257e+03
+Chi-sq. points = 2060 
+Lattice reduced: m_4 = 5
+Lattice reduced: m_3 = 5
+3D plot in graph 9
+Lattice reduced: m_2 = 5
+2D plot in graph 9
+Lattice reduced: m_4 = 5
+Lattice reduced: m_3 = 5
+3D plot in graph 9
+Lattice reduced: m_2 = 5
+2D plot in graph 9
+
+Dataset 2: +P non-uniform thermalized, M=40
+
++P non-uniform thermalized, M=40 2#1 
+Chi-sq. error = 3.795372e+01
+Chi-sq. points = 40 
+2D plot in graph 1
+2D plot in graph 1
+
++P non-uniform thermalized, M=40 2#2 
+Chi-sq. error = 4.292811e+01
+Chi-sq. points = 40 
+2D plot in graph 2
+2D plot in graph 2
+
++P non-uniform thermalized, M=40 2#3 
+Chi-sq. error = 3.660454e+01
+Chi-sq. points = 40 
+2D plot in graph 3
+2D plot in graph 3
+
++P non-uniform thermalized, M=40 2#4 
+Chi-sq. error = 2.489460e+00
+Chi-sq. points = 3 
+2D plot in graph 4
+2D plot in graph 4
+
++P non-uniform thermalized, M=40 2#5 
+Chi-sq. error = 4.178502e+01
+Chi-sq. points = 40 
+2D plot in graph 5
+2D plot in graph 5
+
++P non-uniform thermalized, M=40 2#6 
+Chi-sq. error = 2.212038e+00
+Chi-sq. points = 3 
+2D plot in graph 6
+2D plot in graph 6
+
++P non-uniform thermalized, M=40 2#7 
+Chi-sq. error = 6.399547e+01
+Chi-sq. points = 20 
+2D plot in graph 7
+2D plot in graph 7
+
++P non-uniform thermalized, M=40 2#8 
+Chi-sq. error = 2.686952e+02
+Chi-sq. points = 140 
+3D plot in graph 8
+Lattice reduced: Clicks m_2 = 10
+2D plot in graph 8
+3D plot in graph 8
+Lattice reduced: Clicks m_2 = 10
+2D plot in graph 8
+
++P non-uniform thermalized, M=40 2#9 
+Chi-sq. error = 2.364825e+03
+Chi-sq. points = 1581 
+Lattice reduced: m_4 = 5
+Lattice reduced: m_3 = 5
+3D plot in graph 9
+Lattice reduced: m_2 = 5
+2D plot in graph 9
+Lattice reduced: m_4 = 5
+Lattice reduced: m_3 = 5
+3D plot in graph 9
+Lattice reduced: m_2 = 5
+2D plot in graph 9
+
+Dataset 3: +P uniform squeezed, M=40
+
++P uniform squeezed, M=40 3#1 
+Chi-sq. error = 3.795283e+01
+Chi-sq. points = 40 
+2D plot in graph 1
+2D plot in graph 1
+
++P uniform squeezed, M=40 3#2 
+Chi-sq. error = 3.856300e+01
+Chi-sq. points = 40 
+2D plot in graph 2
+2D plot in graph 2
+
++P uniform squeezed, M=40 3#3 
+Chi-sq. error = 2.951423e+01
+Chi-sq. points = 40 
+2D plot in graph 3
+2D plot in graph 3
+
++P uniform squeezed, M=40 3#4 
+Chi-sq. error = 4.124983e+00
+Chi-sq. points = 5 
+2D plot in graph 4
+2D plot in graph 4
+
++P uniform squeezed, M=40 3#5 
+Chi-sq. error = 3.252488e+01
+Chi-sq. points = 40 
+2D plot in graph 5
+2D plot in graph 5
+
++P uniform squeezed, M=40 3#6 
+Chi-sq. error = 9.473726e-01
+Chi-sq. points = 5 
+2D plot in graph 6
+2D plot in graph 6
+
++P uniform squeezed, M=40 3#7 
+Chi-sq. error = 2.340686e+01
+Chi-sq. points = 24 
+2D plot in graph 7
+2D plot in graph 7
+
++P uniform squeezed, M=40 3#8 
+Chi-sq. error = 2.588548e+02
+Chi-sq. points = 202 
+3D plot in graph 8
+Lattice reduced: Clicks m_2 = 10
+2D plot in graph 8
+3D plot in graph 8
+Lattice reduced: Clicks m_2 = 10
+2D plot in graph 8
+
++P uniform squeezed, M=40 3#9 
+Chi-sq. error = 4.209492e+03
+Chi-sq. points = 4142 
+Lattice reduced: m_4 = 5
+Lattice reduced: m_3 = 5
+3D plot in graph 9
+Lattice reduced: m_2 = 5
+2D plot in graph 9
+Lattice reduced: m_4 = 5
+Lattice reduced: m_3 = 5
+3D plot in graph 9
+Lattice reduced: m_2 = 5
+2D plot in graph 9
+
+Dataset 4: +P  unitary thermal, M=40
+
++P  unitary thermal, M=40 4#1 
+Chi-sq. error = 4.305445e+01
+Chi-sq. points = 40 
+2D plot in graph 1
+2D plot in graph 1
+
++P  unitary thermal, M=40 4#2 
+Chi-sq. error = 3.609166e+01
+Chi-sq. points = 40 
+2D plot in graph 2
+2D plot in graph 2
+
++P  unitary thermal, M=40 4#3 
+Chi-sq. error = 5.625397e+01
+Chi-sq. points = 40 
+2D plot in graph 3
+2D plot in graph 3
+
++P  unitary thermal, M=40 4#4 
+Chi-sq. error = 4.785099e+00
+Chi-sq. points = 5 
+2D plot in graph 4
+2D plot in graph 4
+
++P  unitary thermal, M=40 4#5 
+Chi-sq. error = 4.511068e+01
+Chi-sq. points = 40 
+2D plot in graph 5
+2D plot in graph 5
+
++P  unitary thermal, M=40 4#6 
+Chi-sq. error = 4.999448e+00
+Chi-sq. points = 5 
+2D plot in graph 6
+2D plot in graph 6
+
++P  unitary thermal, M=40 4#7 
+Chi-sq. error = 3.860107e+01
+Chi-sq. points = 27 
+2D plot in graph 7
+2D plot in graph 7
+
++P  unitary thermal, M=40 4#8 
+Chi-sq. error = 1.858348e+02
+Chi-sq. points = 235 
+3D plot in graph 8
+Lattice reduced: Clicks m_2 = 10
+2D plot in graph 8
+3D plot in graph 8
+Lattice reduced: Clicks m_2 = 10
+2D plot in graph 8
+
++P  unitary thermal, M=40 4#9 
+Chi-sq. error = 5.196583e+03
+Chi-sq. points = 5509 
+Lattice reduced: m_4 = 5
+Lattice reduced: m_3 = 5
+3D plot in graph 9
+Lattice reduced: m_2 = 5
+2D plot in graph 9
+Lattice reduced: m_4 = 5
+Lattice reduced: m_3 = 5
+3D plot in graph 9
+Lattice reduced: m_2 = 5
+2D plot in graph 9
+
+Dataset 5: W non-uniform squeezed, M=40
+
+W non-uniform squeezed, M=40 5#1 
+Chi-sq. error = 4.142125e+01
+Chi-sq. points = 40 
+2D plot in graph 1
+2D plot in graph 1
+
+W non-uniform squeezed, M=40 5#2 
+Chi-sq. error = 3.799112e+01
+Chi-sq. points = 40 
+2D plot in graph 2
+2D plot in graph 2
+
+W non-uniform squeezed, M=40 5#3 
+Chi-sq. error = 3.582978e+01
+Chi-sq. points = 40 
+2D plot in graph 3
+2D plot in graph 3
+
+W non-uniform squeezed, M=40 5#4 
+Chi-sq. error = 3.890593e+00
+Chi-sq. points = 3 
+2D plot in graph 4
+2D plot in graph 4
+
+Dataset 6: W non-uniform thermalized, M=40
+
+W non-uniform thermalized, M=40 6#1 
+Chi-sq. error = 3.258486e+01
+Chi-sq. points = 40 
+2D plot in graph 1
+2D plot in graph 1
+
+W non-uniform thermalized, M=40 6#2 
+Chi-sq. error = 3.771940e+01
+Chi-sq. points = 40 
+2D plot in graph 2
+2D plot in graph 2
+
+W non-uniform thermalized, M=40 6#3 
+Chi-sq. error = 2.119052e+01
+Chi-sq. points = 40 
+2D plot in graph 3
+2D plot in graph 3
+
+W non-uniform thermalized, M=40 6#4 
+Chi-sq. error = 3.136113e-01
+Chi-sq. points = 3 
+2D plot in graph 4
+2D plot in graph 4
+
+Dataset 7: W uniform squeezed, M=40
+
+W uniform squeezed, M=40 7#1 
+Chi-sq. error = 4.367654e+01
+Chi-sq. points = 40 
+2D plot in graph 1
+2D plot in graph 1
+
+W uniform squeezed, M=40 7#2 
+Chi-sq. error = 3.470280e+01
+Chi-sq. points = 40 
+2D plot in graph 2
+2D plot in graph 2
+
+W uniform squeezed, M=40 7#3 
+Chi-sq. error = 5.313650e+01
+Chi-sq. points = 40 
+2D plot in graph 3
+2D plot in graph 3
+
+W uniform squeezed, M=40 7#4 
+Chi-sq. error = 1.098872e+00
+Chi-sq. points = 5 
+2D plot in graph 4
+2D plot in graph 4
+
+Dataset 8: W unitary thermal, M=40
+
+W unitary thermal, M=40 8#1 
+Chi-sq. error = 4.231946e+01
+Chi-sq. points = 40 
+2D plot in graph 1
+2D plot in graph 1
+
+W unitary thermal, M=40 8#2 
+Chi-sq. error = 4.658775e+01
+Chi-sq. points = 40 
+2D plot in graph 2
+2D plot in graph 2
+
+W unitary thermal, M=40 8#3 
+Chi-sq. error = 3.661847e+01
+Chi-sq. points = 40 
+2D plot in graph 3
+2D plot in graph 3
+
+W unitary thermal, M=40 8#4 
+Chi-sq. error = 5.006025e+00
+Chi-sq. points = 5 
+2D plot in graph 4
+2D plot in graph 4
+
+Dataset 9: Q non-uniform squeezed, M=40
+
+Q non-uniform squeezed, M=40 9#1 
+Chi-sq. error = 3.234754e+01
+Chi-sq. points = 40 
+2D plot in graph 1
+2D plot in graph 1
+
+Q non-uniform squeezed, M=40 9#2 
+Chi-sq. error = 3.493991e+01
+Chi-sq. points = 40 
+2D plot in graph 2
+2D plot in graph 2
+
+Q non-uniform squeezed, M=40 9#3 
+Chi-sq. error = 4.313713e+01
+Chi-sq. points = 40 
+2D plot in graph 3
+2D plot in graph 3
+
+Q non-uniform squeezed, M=40 9#4 
+Chi-sq. error = 1.775532e-02
+Chi-sq. points = 1 
+2D plot in graph 4
+2D plot in graph 4
+
+Dataset 10: Q non-uniform thermalized, M=40
+
+Q non-uniform thermalized, M=40 10#1 
+Chi-sq. error = 3.573199e+01
+Chi-sq. points = 40 
+2D plot in graph 1
+2D plot in graph 1
+
+Q non-uniform thermalized, M=40 10#2 
+Chi-sq. error = 3.972413e+01
+Chi-sq. points = 40 
+2D plot in graph 2
+2D plot in graph 2
+
+Q non-uniform thermalized, M=40 10#3 
+Chi-sq. error = 3.238659e+01
+Chi-sq. points = 40 
+2D plot in graph 3
+2D plot in graph 3
+
+Q non-uniform thermalized, M=40 10#4 
+Chi-sq. error = 2.882223e-01
+Chi-sq. points = 1 
+2D plot in graph 4
+2D plot in graph 4
+
+Dataset 11: Q uniform squeezed, M=40
+
+Q uniform squeezed, M=40 11#1 
+Chi-sq. error = 2.472089e+01
+Chi-sq. points = 40 
+2D plot in graph 1
+2D plot in graph 1
+
+Q uniform squeezed, M=40 11#2 
+Chi-sq. error = 2.201075e+01
+Chi-sq. points = 40 
+2D plot in graph 2
+2D plot in graph 2
+
+Q uniform squeezed, M=40 11#3 
+Chi-sq. error = 3.446307e+01
+Chi-sq. points = 40 
+2D plot in graph 3
+2D plot in graph 3
+
+Q uniform squeezed, M=40 11#4 
+Chi-sq. error = 1.993696e+00
+Chi-sq. points = 5 
+2D plot in graph 4
+2D plot in graph 4
+
+Dataset 12: Q unitary thermal, M=40
+
+Q unitary thermal, M=40 12#1 
+Chi-sq. error = 2.949218e+01
+Chi-sq. points = 40 
+2D plot in graph 1
+2D plot in graph 1
+
+Q unitary thermal, M=40 12#2 
+Chi-sq. error = 3.726754e+01
+Chi-sq. points = 40 
+2D plot in graph 2
+2D plot in graph 2
+
+Q unitary thermal, M=40 12#3 
+Chi-sq. error = 3.118609e+01
+Chi-sq. points = 40 
+2D plot in graph 3
+2D plot in graph 3
+
+Q unitary thermal, M=40 12#4 
+Chi-sq. error = 2.486255e+00
+Chi-sq. points = 5 
+2D plot in graph 4
+2D plot in graph 4
+
+xGRAPH completed, time = 7.941039
+
+ans =
+
+    1.0812

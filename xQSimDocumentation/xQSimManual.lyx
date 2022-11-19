@@ -1,0 +1,4981 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass scrartcl
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+xQSim Manual: v1.0
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+xQSim is a software package for e
+\series bold
+x
+\series default
+tensible 
+\series bold
+Q
+\series default
+uantum 
+\series bold
+Sim
+\series default
+ulations using phase-space representations.
+ It can treat a variety of input types, networks and output measurements.
+ It uses three phase-space simulation methods: the generalized P-distribution
+ (
+\begin_inset Formula $method=1$
+\end_inset
+
+), the Wigner distribution (
+\begin_inset Formula $method=2$
+\end_inset
+
+), and the Q-function (
+\begin_inset Formula $method=3$
+\end_inset
+
+), provided they have positive distributions.
+ Currently, saturating detectors require the use of 
+\begin_inset Formula $method=1$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+The code provided in v1.0 simulates gaussian quantum inputs with an admixture
+ of thermal noise to model phase decoherence.
+ Details are in a theoretical paper 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Drummond2021"
+literal "false"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The package provided has six parts:
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+xQSimCode.
+ 
+\series default
+This has the main quantum simulation code.
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+xQSimExamples.
+ 
+\series default
+This has the scripts used to simulate experiments for comparisons, as well
+ as scripts used for testing.
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+xQSimData.
+ 
+\series default
+This has data extracted from a gaussian boson sampling experiment, in a
+ format where it can be loaded for comparisons.
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+xQSimDocumentation.
+ 
+\series default
+This provides the documentation, including this report and a preprint of
+ a research paper that uses the software.
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+xGraph.
+ 
+\series default
+This multidimensional graphics program is documented in a separate user
+ guide.
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+xQSimGBSExperiments.
+ 
+\series default
+This has recent public experimental data, and data extraction codes for
+ reference purposes.
+\end_layout
+
+\begin_layout Standard
+The code provided is written in Matlab, which is a proprietary language
+ of The Mathworks Inc.
+ It is fully compatible with Octave, which is a slower, free public domain
+ clone of Matlab.
+ Parallel features are only available in Matlab, and require the parallel
+ toolbox.
+ These features are optional, but give large speed improvements on multicore
+ computers if the parallel toolbox is used.
+ Faster GPU/Python versions exist also, for GPU enabled supercomputers.
+\end_layout
+
+\begin_layout Standard
+Data corresponds to an experimental paper 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Zhong2020"
+literal "false"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Section
+xQSim operation
+\end_layout
+
+\begin_layout Standard
+The initial xQSim software distributions consists of Matlab functions, including
+ 
+\emph on
+xQSim
+\emph default
+ itself, together with functions called by 
+\emph on
+xQSim
+\emph default
+.
+ There are also test scripts with inputs that can be modified.
+ The functions used can be replaced as required for different applications.
+ The input is a sequence of parameter structures in a cell array.
+ The output data is a nested cell array giving first the sequence index,
+ then one graph index for each average correlation calculated.
+\end_layout
+
+\begin_layout Standard
+The output data is compatible with the 
+\emph on
+xGraph
+\emph default
+ multidimensional batch graphics program, documented separately.
+ Other graphics codes can be used, too, if compatible with the data files.
+ An example and description of the basic functions available is given below.
+\end_layout
+
+\begin_layout Subsection
+xQSim example
+\end_layout
+
+\begin_layout Standard
+xQSim is the quantum simulation code.
+ To run this, an input m-file is needed to define the simulation parameters
+ and run the code.
+ A simple example is given below.
+ This makes use of xGraph, an accompanying batch graphics program, but use
+ of xGraph is optional.
+ More examples are given in the xQSimExamples folder.
+ 
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Box Doublebox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+
+\family typewriter
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+p.matrix     = @Unitary;                %matrix type
+\end_layout
+
+\begin_layout Plain Layout
+
+p.M          = 40;                      %matrix size m
+\end_layout
+
+\begin_layout Plain Layout
+
+p.N          = 20;                      %input size n
+\end_layout
+
+\begin_layout Plain Layout
+
+p.ensembles  = [1000,10,12];            %repeats for errors
+\end_layout
+
+\begin_layout Plain Layout
+
+p.r          = 1;                       %squeezing parameter(s)
+\end_layout
+
+\begin_layout Plain Layout
+
+p.observe    = {@n,@k};                 %correlation functions
+\end_layout
+
+\begin_layout Plain Layout
+
+p.glabels    = {{'Mode m'},{'Mode m'}}; %axis label
+\end_layout
+
+\begin_layout Plain Layout
+
+p.olabels    = {'<n>','<c>'};           %Numbers and clicks
+\end_layout
+
+\begin_layout Plain Layout
+
+[e1,d,p]     = xqsim(p);                %simulation function
+\end_layout
+
+\begin_layout Plain Layout
+
+xgraph(d,p);                            %graphics function
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+xQSim parameters
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+The input is a cell array of parameter structures p.
+
+\series default
+ The code generates simulation data and sampling errors in an output cell
+ data array 
+\begin_inset Formula $d,$
+\end_inset
+
+ including comparative experimental or analytic data if required.
+ An input cell array can be replaced by a single parameter structure if
+ required.
+\end_layout
+
+\begin_layout Standard
+The simulations can treat an arbitrary sequence of networks and parameters.
+ Some inputs are optional, and have specified defaults.
+ These allow the input parameter list to be shortened.
+ The main inputs in the structure 
+\begin_inset Formula $p$
+\end_inset
+
+ are: 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="22" columns="4">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Label
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Type
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Default
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Description
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+M
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+integer
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Total matrix size
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+N
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+integer
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Number of excited input modes
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+cyc
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+integer
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Number of cycles of network
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+matrix
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+matrix function
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Identity
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+An 
+\begin_inset Formula $M\times M$
+\end_inset
+
+ transfer matrix function
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+ensembles
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+vector
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[1,1,1]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Size of vector, serial, parallel ensemble
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+method
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+integer
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Phase-space method: 
+\begin_inset Formula $m=1,2,3$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+name
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+character
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+''
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Name of simulation
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+pnames
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+array of characters
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+{'+P ','W ','Q '}
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Names of phase-space methods
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+Tname
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+unitary name
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+matrix(0)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Name of transmission matrix
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+r
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+vector or function
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+An n-dimensional squeezing vector
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $eps$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+vector
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+An n-dimensional decoherence factor
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+t
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+vector
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+An n-dimensional transmission factor
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+re
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+vector
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+An n-dimensional recycling factor
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+observe
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+function handles
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\{@(a,p)\,a\}$
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Observable functions
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+compare
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+function handles
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+[]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Optional comparison functions
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+cutoff
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+real
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-1.e100
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Lower cutoff for graphs and 
+\begin_inset Formula $\chi^{2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+counts 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+integer
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Total experimental counts for 
+\begin_inset Formula $\chi^{2}$
+\end_inset
+
+ tests
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+mincount 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+integer
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Minimum count for 
+\begin_inset Formula $\chi^{2}$
+\end_inset
+
+ tests
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+graphs
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+integer
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Maximum number of data outputs
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+gen
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+function handle
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $@xqgen$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Stochastic generation code
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+print
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+integer
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Flag for printing verbosity level: 0,1,2
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Note that vectors 
+\begin_inset Formula $r$
+\end_inset
+
+, 
+\begin_inset Formula $eps$
+\end_inset
+
+, 
+\begin_inset Formula $t$
+\end_inset
+
+ are 
+\begin_inset Formula $N$
+\end_inset
+
+-dimensional.
+ They are expanded to 
+\begin_inset Formula $N$
+\end_inset
+
+ dimensions by repeating the last element, if they are less than 
+\begin_inset Formula $N$
+\end_inset
+
+-dimensional.
+ 
+\end_layout
+
+\begin_layout Itemize
+If 
+\begin_inset Formula $ensembles(1)>1$
+\end_inset
+
+, all calculations are repeated in parallel and averaged using low-level,
+ single core vector methods.
+\end_layout
+
+\begin_layout Itemize
+If 
+\begin_inset Formula $ensembles(2)>1$
+\end_inset
+
+, calculations are repeated sequentially, in a loop, in order to estimate
+ sampling errors.
+\end_layout
+
+\begin_layout Itemize
+If 
+\begin_inset Formula $ensembles(3)>1$
+\end_inset
+
+, calculations are repeated using multi-core parallel loops.
+ This is also used to estimate sampling errors.
+\end_layout
+
+\begin_layout Itemize
+If 
+\begin_inset Formula $method>1$
+\end_inset
+
+, an alternative phase-space method is used: Wigner or Q.
+ The default is the +P method.
+ 
+\end_layout
+
+\begin_layout Itemize
+The squeezing vector 
+\series bold
+
+\begin_inset Formula $\bm{r}$
+\end_inset
+
+
+\series default
+ and transfer matrix 
+\begin_inset Formula $matrix$
+\end_inset
+
+ can be input as numbers or as a function handle.
+ The transmission factor 
+\begin_inset Formula $t$
+\end_inset
+
+ is an additional prefactor applied to inputs prior to the measured transmission
+ 
+\begin_inset Formula $matrix$
+\end_inset
+
+ to allow additional fine-tuning.
+\end_layout
+
+\begin_layout Standard
+Other notation used in the input structure is given in the associated preprint.
+ Note that 
+\begin_inset Formula $graphs$
+\end_inset
+
+ is the number of distinct graph and data types.
+ More than one output plot can be generated per graph.
+\end_layout
+
+\begin_layout Subsection
+Simulation notes
+\end_layout
+
+\begin_layout Itemize
+Starting from a vacuum state, 
+\begin_inset Formula $\bm{a}^{(0)}$
+\end_inset
+
+, xQSim iteratively combines the 
+\begin_inset Formula $n$
+\end_inset
+
+-th output 
+\begin_inset Formula $\bm{a}^{(n)}$
+\end_inset
+
+ with a locally generated Gaussian, or another state in general.
+ The quantum state is transformed through a network to generate 
+\begin_inset Formula $\bm{a}^{(n+1)}$
+\end_inset
+
+ and detected.
+ 
+\end_layout
+
+\begin_layout Itemize
+Each network is repeated 
+\begin_inset Formula $cyc$
+\end_inset
+
+ times, with a default of 
+\begin_inset Formula $cyc=1$
+\end_inset
+
+.
+ If 
+\begin_inset Formula $cyc>1$
+\end_inset
+
+, output data is indexed by cycle, and graphs vs cycle number are made.
+ If 
+\begin_inset Formula $cyc>1$
+\end_inset
+
+ and 
+\begin_inset Formula $re>0$
+\end_inset
+
+, the field is recycled with recycling amplitude 
+\begin_inset Formula $re$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Itemize
+The 
+\begin_inset Formula $gen$
+\end_inset
+
+ code generates the input and simulates the network.
+ 
+\end_layout
+
+\begin_layout Itemize
+For saturating or 'click' detectors, +P-distributions can be used.
+ Saturating detectors have a complex operator form.
+\end_layout
+
+\begin_layout Itemize
+The Wigner distribution is optimal for quadrature detection; the P-distribution
+ is best for number and click detectors.
+\end_layout
+
+\begin_layout Itemize
+Non-optimal representations cause a growth in sampling error for high-order
+ correlations with growing network size.
+ 
+\end_layout
+
+\begin_layout Subsection
+Data structures in xqsim and xgraph
+\end_layout
+
+\begin_layout Subsubsection
+xqsim inputs
+\end_layout
+
+\begin_layout Standard
+When 
+\emph on
+xqsim
+\emph default
+ is used, it is called with the argument (
+\emph on
+input
+\emph default
+).
+ Each simulation is defined as a cell array of structures:
+\begin_inset Formula 
+\[
+input:=\{p_{1},p_{2},\ldots\}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Each structure 
+\begin_inset Formula $p$
+\end_inset
+
+ contains parameters relevant to a particular step in the sequence:
+\begin_inset Formula 
+\[
+p:=(p.M,p.N,\ldots)
+\]
+
+\end_inset
+
+If the sequence has just one member, a structure can used directly, without
+ an enclosing cell array.
+\end_layout
+
+\begin_layout Subsubsection
+xqsim internal phase-space
+\end_layout
+
+\begin_layout Standard
+Although this is transparent to the user, each network in the sequence transform
+s a matrix of quantum amplitudes: 
+\begin_inset Formula 
+\[
+\bm{a}:=\left[\bm{\alpha},\bm{\beta}\right]_{j}=a_{ij}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The first index is the mode index from 
+\begin_inset Formula $1,\ldots2M$
+\end_inset
+
+, where indices from 
+\begin_inset Formula $1,\ldots,M$
+\end_inset
+
+ indicate amplitudes equivalent to 
+\begin_inset Formula $\hat{a}_{i}$
+\end_inset
+
+, and indices from 
+\begin_inset Formula $M+1,\ldots2M$
+\end_inset
+
+ are amplitudes equivalent to 
+\begin_inset Formula $\hat{a}_{i}^{\dagger}$
+\end_inset
+
+.
+ These quantum amplitudes can be recycled in a sequence of network operations.
+ 
+\end_layout
+
+\begin_layout Standard
+The second index is from 
+\begin_inset Formula $1,\dots p.ensembles(1)$
+\end_inset
+
+, for ensemble averaging using vector parallel processing.
+ These transformations are repeated 
+\begin_inset Formula $p.ensembles(2)$
+\end_inset
+
+ times in a local loop, and 
+\begin_inset Formula $p.ensembles(3)$
+\end_inset
+
+ times nonlocally, with parallel loops.
+ At least one loop ensemble larger than 
+\begin_inset Formula $1$
+\end_inset
+
+ is required to estimate errors.
+\end_layout
+
+\begin_layout Subsubsection
+xqsim outputs
+\end_layout
+
+\begin_layout Standard
+The output data is a nested cell array, whose length is the total sequence
+ length:
+\begin_inset Formula 
+\[
+data:=\{d_{1},d_{2},\ldots\}
+\]
+
+\end_inset
+
+At each step in the sequence, 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+a data
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+ cell array 
+\begin_inset Formula $d$
+\end_inset
+
+ of individual quantum expectation values or graphs is generated, where:
+\begin_inset Formula 
+\[
+d:=\{g_{1},g_{2},\ldots\}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Here each graph 
+\begin_inset Formula $g_{n}$
+\end_inset
+
+ is the output of the 
+\begin_inset Formula $n-th$
+\end_inset
+
+ defined observe function, described below.
+ These are real, multidimensional arrays of the data.
+ They include averages calculated by the observe functions, and error-bars
+ generatd by the 
+\begin_inset Formula $qsim$
+\end_inset
+
+ code:
+\begin_inset Formula 
+\[
+g:=\left(g_{\ell j_{1}j_{2}\ldots j_{n},e}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+There is a standardized form of 
+\begin_inset Formula $g$
+\end_inset
+
+.
+ The first index 
+\begin_inset Formula $\ell$
+\end_inset
+
+ is a line index, reserved for subsequent plotting software.
+ The next 
+\begin_inset Formula $n$
+\end_inset
+
+ indices are a multidimensional data array with arbitrary dimensionality.
+ If 
+\begin_inset Formula $cyc>1$
+\end_inset
+
+, 
+\begin_inset Formula $j_{1}$
+\end_inset
+
+ is the cycle index.
+ Other dimensions may correspond to a mode index or to a count number.
+ The last index 
+\begin_inset Formula $e$
+\end_inset
+
+ is an error index, to address the data and sampling error.
+ This is also used to index the comparison or experimental data, if it is
+ available from the optional compare functions.
+\end_layout
+
+\begin_layout Subsubsection
+xgraph inputs 
+\end_layout
+
+\begin_layout Standard
+If 
+\emph on
+xgraph
+\emph default
+ is used, it is called with the arguments (
+\emph on
+input
+\emph default
+, 
+\emph on
+data
+\emph default
+).
+ Here 
+\begin_inset Formula $input$
+\end_inset
+
+ is a cell array, a sequence of graphics structures.
+ It can be the same cell array used to define the simulation parameters.
+ However, the graphics parameters are a distinct set.
+ The 
+\begin_inset Formula $data$
+\end_inset
+
+ is the output data from xQSim, or some combination of the output data in
+ more complex examples.
+ One can run 
+\emph on
+xQSim
+\emph default
+ multiple times with different parameters to show functional dependences.
+ The purpose of xGraph is to allow batch generation of many graphs from
+ a multidimensional data array.
+\end_layout
+
+\begin_layout Section
+Observations and comparisons
+\end_layout
+
+\begin_layout Subsection
+Observe
+\end_layout
+
+\begin_layout Standard
+The 
+\emph on
+observe
+\emph default
+ functions are user-specified functions that calculate each observable average
+ and return it, given the phase-space amplitude matrix 
+\begin_inset Formula $\bm{a}$
+\end_inset
+
+.
+ Each 
+\emph on
+observe
+\emph default
+ function can have arbitrary output dimensionality.
+ Each can be assigned its own graphics parameters, and an optional initialize
+ function that initialises a given graph, specified by the graph number
+ 
+\begin_inset Formula $n$
+\end_inset
+
+.
+ Parameters are passed to the observe functions through the parameter structure,
+ 
+\begin_inset Formula $p$
+\end_inset
+
+.
+ Observe functions are passed as handles, in a cell array, as @x2 (etc).
+ 
+\end_layout
+
+\begin_layout Standard
+Standard observe functions provided are:
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="9" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Label
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Return type
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Description
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+x2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+vector
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Mean x quadrature squared per channel
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+p2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+vector
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Mean p quadrature squared per channel
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+n
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+vector
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Mean photon number per channel
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+nm
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+vector
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Mean number moments in sequence
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+k
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+vector
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Mean clicks per channel
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+km
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+vector
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Mean click moments in sequence
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+k1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+vector
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Click probability - single partition
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+kn
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+array
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Click probability - n-fold partition
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+List of observe functions
+\end_layout
+
+\begin_layout Subsubsection
+x2
+\end_layout
+
+\begin_layout Standard
+This computes the x quadrature moment per channel, 
+\begin_inset Formula $\left\langle \hat{x}_{k}^{2}\right\rangle $
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+p2
+\end_layout
+
+\begin_layout Standard
+This computes the p quadrature moment per channel, 
+\begin_inset Formula $\left\langle \hat{p}_{k}^{2}\right\rangle $
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+n
+\end_layout
+
+\begin_layout Standard
+This computes the mean photon number per channel, 
+\begin_inset Formula $\left\langle \hat{a}_{k}^{\dagger}\hat{a}_{k}\right\rangle =\left\langle \hat{n}_{k}\right\rangle $
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+nm
+\end_layout
+
+\begin_layout Standard
+This computes the mean photon number correlation over adjacent channels,
+ 
+\begin_inset Formula $\left\langle \hat{n}_{1}\hat{n}_{2},\dots\hat{n}_{k}\right\rangle $
+\end_inset
+
+.
+ The correlation order values are input as a cell array of index vectors,
+ 
+\begin_inset Formula $p.O{n}=[k_{1},k_{2},..].$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+k
+\end_layout
+
+\begin_layout Standard
+This computes the mean clicks per channel, from the click projectors, 
+\begin_inset Formula $\left\langle \hat{\pi}_{k}\left(1\right)\right\rangle $
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+km
+\end_layout
+
+\begin_layout Standard
+This computes the mean click correlation over a list of channels, 
+\begin_inset Formula $\left\langle \hat{\pi}_{1}\left(1\right)\hat{\pi}_{2}\left(1\right),\dots\hat{\pi}_{k}\left(1\right)\right\rangle $
+\end_inset
+
+.
+ The correlation order values are input as a cell array of index vectors,
+ 
+\begin_inset Formula $p.O{n}=[k_{1},k_{2},..].$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+k1
+\end_layout
+
+\begin_layout Standard
+This calculates the total click probability in a partition of channels.
+ The partition indices can be input as a cell array giving the number of
+ channels, if the channels are numbered from 
+\begin_inset Formula $1\ldots p.Part\{n\}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+kn
+\end_layout
+
+\begin_layout Standard
+This calculates the total click probability in a multi-dimensional partition
+ of channels.
+ The partition values can be input as a cell array of vectors containing
+ the number of channels, if the channels are numbered sequentially from
+ 
+\begin_inset Formula $1\ldots p.Part\{1\}$
+\end_inset
+
+.
+ Otherwise, the individual channel number vectors are input in a nested
+ cell array of vectors.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+his calculates the Torontonian, the probability of a particular click sequence
+ identified by a binary number 
+\begin_inset Formula $C=01001...$
+\end_inset
+
+.
+ The phase-space equation for this is:
+\begin_inset Formula 
+\[
+T\left(C\right)=\left\langle \prod\hat{\pi}\left(C_{i}\right)\right\rangle =\left\langle \prod\left[\pi_{i}\left(1\right)^{C_{i}}\pi_{i}\left(0\right)^{\left(1-C_{i}\right)}\right]\right\rangle 
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $\pi_{i}\left(0\right)=\exp-n_{i}$
+\end_inset
+
+ and 
+\begin_inset Formula $\pi_{i}\left(1\right)=1-\pi_{i}\left(0\right)$
+\end_inset
+
+.
+ There are 
+\begin_inset Formula $2^{m}$
+\end_inset
+
+ outputs, indexed from 
+\begin_inset Formula $C=0$
+\end_inset
+
+, so this is only useful for small arrays.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Theoretical results for squeezed thermalised states
+\end_layout
+
+\begin_layout Standard
+Thermal photon number distributions are well known, and are given by:
+\begin_inset Formula 
+\[
+P\left(n\right)=\frac{\bar{n}^{n}}{\left(\bar{n}+1\right)^{n+1}}
+\]
+
+\end_inset
+
+hence for a click distribution, corresponding to either 
+\begin_inset Formula $n=0$
+\end_inset
+
+ or 
+\begin_inset Formula $n>0$
+\end_inset
+
+, one therefore obtains:
+\begin_inset Formula 
+\begin{align*}
+\pi\left(0\right)=P\left(0\right) & =\frac{1}{\bar{n}+1}\\
+\pi\left(1\right)=1-\pi\left(0\right) & =\frac{\bar{n}}{\bar{n}+1}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A squeezed thermal state can be obtained by squeezing a thermal state with
+ initial occupation 
+\begin_inset Formula $n_{th}$
+\end_inset
+
+, which gives 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Marian1992"
+literal "false"
+
+\end_inset
+
+:
+\begin_inset Formula 
+\begin{align*}
+\bar{n}= & \left\langle \hat{a}^{\dagger}\hat{a}\right\rangle =n_{th}+\left(2n_{th}+1\right)\sinh^{2}\left(r\right)\\
+\tilde{m}= & \left\langle \hat{a}^{2}\right\rangle =\left(2n_{th}+1\right)\sinh\left(r\right)\cosh\left(r\right)
+\end{align*}
+
+\end_inset
+
+For a pure squeezed state, 
+\begin_inset Formula $m^{2}-\bar{n}=\bar{n}^{2}$
+\end_inset
+
+,.
+ In the thermalised case, the relationship is modified, since to eliminate
+ 
+\begin_inset Formula $r$
+\end_inset
+
+ one must use the relationship that
+\begin_inset Formula 
+\begin{align*}
+\frac{\tilde{m}^{2}}{\left(2n_{th}+1\right)^{2}} & =\sinh^{2}\left(r\right)\left(1+\sinh^{2}\left(r\right)\right)\\
+ & =\frac{\bar{n}-n_{th}}{\left(2n_{th}+1\right)}\left(1+\frac{\bar{n}-n_{th}}{\left(2n_{th}+1\right)}\right)
+\end{align*}
+
+\end_inset
+
+Therefore:
+\begin_inset Formula 
+\begin{align*}
+\tilde{m}^{2} & =\left(\bar{n}-n_{th}\right)\left(1+\bar{n}+n_{th}\right)=\bar{n}-n_{th}+\bar{n}^{2}-n_{th}^{2}\\
+ & =\bar{n}+\bar{n}^{2}-\left(n_{th}^{2}+n_{th}\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Next, the probability of a vacuum state is 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Marian1992"
+literal "false"
+
+\end_inset
+
+:
+\begin_inset Formula 
+\begin{align*}
+\pi\left(0\right) & =\frac{1}{n_{th}+1}\left(1+\frac{2n_{th}+1}{\left(n_{th}+1\right)^{2}}\sinh^{2}\left(r\right)\right)^{-(1/2)}\\
+ & =\left(\bar{n}-n_{th}+\left(n_{th}+1\right)^{2}\right)^{-(1/2)}\\
+ & =\left(1+\bar{n}+n_{th}+n_{th}^{2}\right)^{-(1/2)}\\
+ & =\left(\left(1+\bar{n}\right)^{2}-\tilde{m}^{2}\right)^{-(1/2)}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Hence, by using known results for a photon number distribution of a squeezed
+ thermal state 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Marian1992"
+literal "false"
+
+\end_inset
+
+, combined with the definitions of 
+\begin_inset Formula $\bar{n}$
+\end_inset
+
+ and 
+\begin_inset Formula $\tilde{m}$
+\end_inset
+
+, the probability of a vacuum state and a non-vacuum or click state are:
+\begin_inset Formula 
+\begin{align}
+\left\langle \hat{\pi}\left(0\right)\right\rangle  & =\frac{1}{\sqrt{\left(1+\bar{n}\right)^{2}-\tilde{m}^{2}}}\\
+\left\langle \hat{\pi}\left(1\right)\right\rangle  & =1-\frac{1}{\sqrt{\left(1+\bar{n}\right)^{2}-\tilde{m}^{2}}}\nonumber 
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Multimode distributions
+\end_layout
+
+\begin_layout Standard
+For the comparison functions, special multimode test cases are used, in
+ which all output events are independent.
+ This is obtainable either from having arbitrary independent thermalised
+ squeezed inputs and a diagonal transmission matrix, or else by having a
+ uniform, fully thermalized input together with an arbitrary unitary transmissio
+n matrix.
+\end_layout
+
+\begin_layout Standard
+Either of these cases lead to independent outputs in which each mode is
+ in a gaussian state.
+ The simplest case is for a uniform output in which 
+\begin_inset Formula $\left\langle \hat{\pi}\left(1\right)\right\rangle =p$
+\end_inset
+
+ is constant.
+ In this case, the probability of 
+\begin_inset Formula $m$
+\end_inset
+
+ total clicks in 
+\begin_inset Formula $M$
+\end_inset
+
+ channels has a probability of:
+\begin_inset Formula 
+\begin{equation}
+P\left(m\right)=\frac{M!p^{m}\left(1-p\right)^{M-m}}{m!\left(M-m\right)!}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Compare
+\end_layout
+
+\begin_layout Standard
+The 
+\emph on
+compare
+\emph default
+ function is a user-specified function that evaluates a function and returns
+ it.
+ This is used for testing and also to input experimental data for comparisons.
+ The comparisons may include error data, which can be zero for exact results.
+ Comparisons are also plotted using 
+\emph on
+compare
+\emph default
+.
+ This generates additional comparison plots, as well as error totals that
+ are converted into a 
+\begin_inset Formula $\chi^{2}$
+\end_inset
+
+- error estimate when there are statistical variances available.
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="9" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Label
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Return type
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Description
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+x2c
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+vector
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Mean x quadrature squared per channel
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+p2c
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+vector
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Mean p quadrature squared per channel
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+nc
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+vector
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Mean photon number per channel
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+nmc
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+vector
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Mean number moments in sequence
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+kc
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+vector
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Mean clicks per channel
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+kmc
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+vector
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Mean click moments in sequence
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+k1c
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+vector
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Click probability - single partition
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+knc
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+array
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Click probability - n-fold partition
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In all analytic comparisons, there are two options:
+\end_layout
+
+\begin_layout Itemize
+an identity transmission matrix can be used with an arbitrary Gaussian input,
+ uniform or non-uniform.
+\end_layout
+
+\begin_layout Itemize
+any unitary with a scaled transmission (
+\begin_inset Formula $t\le1$
+\end_inset
+
+) can be used with a fully thermalised (
+\begin_inset Formula $eps=1$
+\end_inset
+
+), uniform input.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+x2c
+\end_layout
+
+\begin_layout Standard
+This compares the analytic x quadrature moment per channel, 
+\begin_inset Formula $\left\langle \hat{x}^{2}\right\rangle $
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+p2c
+\end_layout
+
+\begin_layout Standard
+This compares the analytic p quadrature vmoment per channel, 
+\begin_inset Formula $\left\langle \hat{p}^{2}\right\rangle $
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+nc
+\end_layout
+
+\begin_layout Standard
+This gives a comparison of photon numbers per channel.
+\end_layout
+
+\begin_layout Subsubsection
+nmc
+\end_layout
+
+\begin_layout Standard
+This comparison of number moments uses the same input as 
+\series bold
+nm
+\series default
+.
+\end_layout
+
+\begin_layout Subsubsection
+kc
+\end_layout
+
+\begin_layout Standard
+This comparison of click probabilities per channel uses the same input as
+ 
+\series bold
+k
+\series default
+.
+\end_layout
+
+\begin_layout Subsubsection
+kmc
+\end_layout
+
+\begin_layout Standard
+This comparison of click moments uses the same input as 
+\series bold
+km
+\series default
+.
+\end_layout
+
+\begin_layout Subsubsection
+k1c
+\end_layout
+
+\begin_layout Standard
+In this comparison the clicks are split into an n-fold partition, using
+ the same input as 
+\series bold
+k1
+\series default
+.
+\end_layout
+
+\begin_layout Subsubsection
+knc
+\end_layout
+
+\begin_layout Standard
+In this comparison the clicks are split into an n-fold partition, using
+ the same input as 
+\series bold
+kn
+\series default
+.
+\end_layout
+
+\begin_layout Section
+Experimental data and 
+\begin_inset Formula $\chi^{2}$
+\end_inset
+
+ tests
+\end_layout
+
+\begin_layout Standard
+This is generated by the Matlab program qcounts.m, which analyses experimental
+ count data, from binary files in *.bin.
+ It generates individual Matlab data files for each observable and records
+ the total number of valid counts, which are also saved in the data files.
+ All experimental data should be on the MATLAB path if comparisons are required.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="8" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Label
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Type
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Description
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+@expmatrix
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+function handle
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Experimental matrix, loaded in xQSim
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+@expsqueeze
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+function handle
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Experimental squeezing data, loaded in xQSim
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+expk.mat
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+file
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Experimental clicks per channel
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+expkm.mat
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+file
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Experimental 
+\begin_inset Formula $K$
+\end_inset
+
+-th order moment 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+expk1.mat
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+file
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Experimental single partition clicks
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+expk2.mat
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+file
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Experimental two-fold partition clicks
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+expk4.mat
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+file
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Experimental four-fold partition clicks
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Experimental comparisons
+\end_layout
+
+\begin_layout Standard
+Using the 
+\emph on
+compare
+\emph default
+ function, experimental data is called from user specified functions which
+ also sets error data to zero.
+ Experimental error data is then calculated in xQSim and, following the
+ 
+\begin_inset Formula $\chi$
+\end_inset
+
+-squared theory below, is converted into a 
+\begin_inset Formula $\chi$
+\end_inset
+
+-squared error estimate.
+ Experimental comparison functions are located in qDATA.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="6" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Label
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Type
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Description
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+expk
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+vector
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Experimental click probability - Clicks per channel
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+expkm
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+vector
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Experimental click probability - 
+\begin_inset Formula $K$
+\end_inset
+
+-th order moment
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+expk1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+vector
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Experimental click probability - single partition
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+expk2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+matrix
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Experimental click probability - two-fold partition
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+expk4
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+matrix
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Experimental click probability - four-fold partition
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+expk
+\end_layout
+
+\begin_layout Standard
+In this comparison of experimental click probability per channel, experimental
+ data is loaded from 
+\emph on
+expk.mat
+\emph default
+.
+\end_layout
+
+\begin_layout Subsection
+expkm
+\end_layout
+
+\begin_layout Standard
+In this comparison of experimental click probability per channel, experimental
+ data is loaded from 
+\emph on
+expkm.mat
+\emph default
+.
+\end_layout
+
+\begin_layout Subsection
+expk1
+\end_layout
+
+\begin_layout Standard
+In this comparison of experimental click probability for a single partition
+ of all channels, data is loaded from 
+\emph on
+expk1.mat
+\emph default
+.
+\end_layout
+
+\begin_layout Subsection
+expk2
+\end_layout
+
+\begin_layout Standard
+In this comparison of experimental click probability for an equal two-fold
+ partition of all channels, data is loaded from 
+\emph on
+expk2.mat
+\emph default
+.
+\end_layout
+
+\begin_layout Subsection
+expk4
+\end_layout
+
+\begin_layout Standard
+In this comparison of experimental click probability for four-fold partition
+ of all channels, data is loaded from 
+\emph on
+expk4.mat
+\emph default
+.
+\end_layout
+
+\begin_layout Subsection
+Chi-square tests
+\end_layout
+
+\begin_layout Standard
+The data generated and compared with experiment is in the form of probabilities
+ of clicks or binned click patterns.
+ This is tested using chi-square tests.
+ If 
+\begin_inset Formula $n$
+\end_inset
+
+ observations in a random sample from a population are classified into classes
+ with observed numbers 
+\begin_inset Formula $x_{i}$
+\end_inset
+
+ (for 
+\begin_inset Formula $i=1,2,…,k$
+\end_inset
+
+), and a null hypothesis gives the probability 
+\begin_inset Formula $p_{i}$
+\end_inset
+
+ that an observation falls into the 
+\begin_inset Formula $i$
+\end_inset
+
+-th class, then the expected numbers are 
+\begin_inset Formula $m_{i}=np_{i}$
+\end_inset
+
+ .
+\end_layout
+
+\begin_layout Standard
+The limiting distribution of the quantity given below is the 
+\begin_inset Formula $\chi^{2}$
+\end_inset
+
+ distribution:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\chi^{2} & =\sum_{i=1}^{k}\frac{(x_{i}-m_{i})^{2}}{m_{i}}\\
+ & =\sum_{i=1}^{k}\frac{(x_{i}/n-p_{i})^{2}}{p_{i}/n}.
+\end{align*}
+
+\end_inset
+
+ For our purposes, define an experimental probability estimate as 
+\begin_inset Formula $p_{i}^{e}=x_{i}/n$
+\end_inset
+
+, then
+\begin_inset Formula 
+\begin{align*}
+\chi^{2} & =\sum_{i=1}^{k}\frac{(p_{i}^{e}-p_{i})^{2}}{\sigma_{i}^{2}}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Here, 
+\begin_inset Formula $\sigma_{i}^{2}=p_{i}/n$
+\end_inset
+
+, is the estimated experimental variance.
+ Typically, counts less that 
+\begin_inset Formula $x_{i}^{min}\sim10$
+\end_inset
+
+ are ignored, as the distribution is no longer Gaussian for small counts.
+ The program produces 
+\begin_inset Formula $\chi^{2}$
+\end_inset
+
+ tests that include an estimate of simulation errors:
+\begin_inset Formula 
+\[
+\sigma_{i}^{2}=p_{i}/n+\sigma_{i}^{s2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note that this can also be used to compare simulations with other analytic
+ comparison theories, not just with experiment.
+\end_layout
+
+\begin_layout Section
+Architecture and customization
+\end_layout
+
+\begin_layout Subsection
+xQSim data objects
+\end_layout
+
+\begin_layout Standard
+The xQSim data objects include parameters and methods, but with an open,
+ object-oriented architecture for extensibility.
+ Most xQSim functions are modular and replaceable.
+ This is as easy as just defining a new function handle to replace the default
+ value.
+ The xQSim code folder includes examples of how these are written.
+ All output observables are divided up into a cell array of data graphs,
+ generated in parallel.
+\end_layout
+
+\begin_layout Subsection
+Common functions
+\end_layout
+
+\begin_layout Standard
+The user-definable functions, input and output field dimensions and calling
+ arguments are:
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Label
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Arguments
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Output dimensions
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+a=gen
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+(a,p): 
+\begin_inset Formula $a=(2M\times S_{1})$
+\end_inset
+
+,
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+p=[struct]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset Formula $a=(2M\times S_{1})$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+o=observe{n}
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+(a,p): 
+\begin_inset Formula $a=(2M\times S_{1})$
+\end_inset
+
+,
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+p=[struct]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Arbitrary: 
+\begin_inset Formula $m_{l}\times m_{1}\times m_{2}\ldots\times m_{n}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+c=compare{n}
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset Formula $(p)$
+\end_inset
+
+,
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+p=[struct]
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Should match observe: 
+\begin_inset Formula $m_{l}\times m_{1}\times m_{2}\ldots\times m_{n}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Notes 
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+\emph on
+gen
+\emph default
+ has a default, namely 
+\begin_inset Formula $xqgen$
+\end_inset
+
+, which can be user modified
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+gen input amplitudes are used for recycling.
+ If this is not required, just use 
+\begin_inset Formula $(\sim,p):$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+data outputs to xgraph include two extra dimensions, 
+\begin_inset Formula $m_{l}\times m_{1}\times m_{2}\ldots\times m_{n}\times m_{e}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+The first graphics 
+\begin_inset Formula $m_{l}$
+\end_inset
+
+ dimension is reserved for plotting multiple lines on graphs, hence use
+ 
+\begin_inset Formula $m_{l}=1$
+\end_inset
+
+ internally
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+Obtaining multiple lines requires modifying the output data file before
+ xgraph, or using the gfunction call in xgraph
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+The 
+\begin_inset Formula $m_{e}$
+\end_inset
+
+ dimension is used for error bars.
+ Here 
+\begin_inset Formula $m_{e}=2$
+\end_inset
+
+ is reserved, 
+\begin_inset Formula $m_{e}=3$
+\end_inset
+
+ stores the sampling error bars
+\end_layout
+
+\begin_layout Subsection
+Customization guide
+\end_layout
+
+\begin_layout Standard
+For example, to define your own stochastic variable generation function,
+ include in the xQSim input the line:
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Box Doublebox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+
+\family typewriter
+p.gen=@Mygen;
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Next, include anywhere on your Matlab path the function definition, for
+ example:
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Box Doublebox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+
+\family typewriter
+function a = Mygen(a,p)
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+% a = Mygen(a,p) generates stochastic variables my way!
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+..
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+a = ...;
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+end
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Similarly, to define your own observe function for data graph 
+\begin_inset Formula $6$
+\end_inset
+
+, include in the xQSim input the line:
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Box Doublebox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+
+\family typewriter
+p.observe{6}=@Myobserve;
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Next, include anywhere on your Matlab path the function definition, for
+ example:
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Box Doublebox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+
+\family typewriter
+function d = Myobserve(a,p)
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+% d = Myobserve(a,p) generates observables my way!
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+..
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+d = ...;
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+end
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+To define your own comparison function, include in the xQSim input the line:
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Box Doublebox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+
+\family typewriter
+p.compare{6} = @Mycompare;
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Next, include anywhere on your Matlab path the compare definition, for example:
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Box Doublebox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+
+\family typewriter
+function c = Mycompare(a,p)
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+% c = Mycompare(a,p) generates comparisons my way!
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+..
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+c = ...;
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+end
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+xQSim hints
+\end_layout
+
+\begin_layout Itemize
+When using xQSim, it is a good idea to first run the batch test script,
+ xqsimtest.m.
+ 
+\end_layout
+
+\begin_layout Itemize
+xqsimtest.m tests your parallel toolbox installation.
+ If you have no license for this, omit the third ensemble setting.
+\end_layout
+
+\begin_layout Itemize
+To create a script, it is often easiest to start with an existing script
+ with similar requirements: see Examples folder.
+\end_layout
+
+\begin_layout Itemize
+Graphics parameters can also be included in the parameter structure 
+\begin_inset Formula $\mathbf{p}$
+\end_inset
+
+, either before or after calling 
+\begin_inset Formula $qcpsim$
+\end_inset
+
+, to modify graphs.
+\end_layout
+
+\begin_layout Itemize
+Comparison functions can be included to compare with analytic or experimental
+ results.
+\end_layout
+
+\begin_layout Itemize
+A full list of functionality is listed above.
+\end_layout
+
+\begin_layout Standard
+The input data, here labeled 
+\begin_inset Formula $input$
+\end_inset
+
+, is a sequence of parameter structures that are labeled 
+\begin_inset Formula $p$
+\end_inset
+
+.
+ All of the input parameters and data are later passed to the 
+\begin_inset Formula $xgraph$
+\end_inset
+
+ function.
+ The input data can be numbers, vectors, strings, functions and cell arrays.
+ These are lists of data enclosed in curly brackets, 
+\begin_inset Formula $\{\}$
+\end_inset
+
+.
+ All xQSim metadata has preferred values, so only changes from the preferences
+ need to be input.
+ The resulting combined input including preferred values, is stored internally
+ as a sequence of structures in a cell array to describe the simulation
+ sequence.
+\end_layout
+
+\begin_layout Standard
+Simulation metadata, including all preferred default values that were used
+ in a particular simulation, is also stored in the xQSim output files.
+ This is done in the Matlab 
+\begin_inset Formula $.mat$
+\end_inset
+
+ format, for simplicity so the entire simulation can be easily reconstructed
+ or changed.
+ 
+\end_layout
+
+\begin_layout Standard
+Some conventions are used to simplify inputs, as follows: 
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+Most input data has default values
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+Vector inputs of numbers are enclosed in square brackets, [...].
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+Where multiple inputs of strings, functions or vectors are needed they should
+ be enclosed in curly brackets, {...}, to create a cell array.
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+Vector or cell array inputs with only one member don't require brackets.
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+Incomplete vector or cell array inputs are filled in with the last applicable
+ default or input value, where feasible.
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+Default parameters can be checked by inspecting the output parameters, or
+ setting print =2 in the inputs.
+\end_layout
+
+\begin_layout Standard
+In the output data arrays, the last index is 
+\begin_inset Formula $m_{e}=1$
+\end_inset
+
+ for the averages.
+ The first error field, 
+\begin_inset Formula $m_{e}=2$
+\end_inset
+
+, is reserved for any systematic errors like step-sizes.
+ The second error field, 
+\begin_inset Formula $m_{e}=3$
+\end_inset
+
+ is used for storing one standard deviation error-bar estimates due to computati
+onal sampling errors.
+\end_layout
+
+\begin_layout Section
+Public API
+\end_layout
+
+\begin_layout Subsection
+xQSim functions and objects
+\end_layout
+
+\begin_layout Subsubsection
+function xqsim (input)
+\end_layout
+
+\begin_layout Standard
+The xqsim simulation function takes an input sequence of parameter structures
+ that define a sequence of networks.
+ Each network in the sequence can be repeated, with recycling of the amplitudes,
+ which are then combined with new squeezed or coherent inputs.
+\end_layout
+
+\begin_layout Subsection
+xQSim main parameters
+\end_layout
+
+\begin_layout Standard
+The following parameters can be applied to each member of the sequence.
+ Some important xGraph parameters are included here for reference.
+ These these are marked with a '*' if they are 
+\emph on
+only
+\emph default
+ used by xGraph.
+ They can be omitted for simulation purposes, and added later if required.
+\end_layout
+
+\begin_layout Subsubsection
+M
+\end_layout
+
+\begin_layout Description
+Default: 1
+\end_layout
+
+\begin_layout Standard
+Total number of input and/or output modes to the network.
+\end_layout
+
+\begin_layout Itemize
+p.M >0
+\end_layout
+
+\begin_layout Subsubsection
+N
+\end_layout
+
+\begin_layout Description
+Default: 1
+\end_layout
+
+\begin_layout Standard
+Number of input modes excited, less tyhan or equal 
+\begin_inset Formula $M$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+p.N >0
+\end_layout
+
+\begin_layout Itemize
+p.M >0
+\end_layout
+
+\begin_layout Subsubsection
+cyc
+\end_layout
+
+\begin_layout Description
+Default: 1
+\end_layout
+
+\begin_layout Standard
+Number of cycles of the network simulated.
+\end_layout
+
+\begin_layout Itemize
+p.cyc >0
+\end_layout
+
+\begin_layout Subsubsection
+matrix
+\end_layout
+
+\begin_layout Description
+Default: @Identity
+\end_layout
+
+\begin_layout Standard
+Function handle to generate the linear network matrix.
+ Both Identity and random Unitary matrices are supplied.
+ It can also be just an 
+\begin_inset Formula $M\times M$
+\end_inset
+
+ complex matrix, for small test matrices entered inline.
+\end_layout
+
+\begin_layout Itemize
+p.matrix = @function
+\end_layout
+
+\begin_layout Subsubsection
+ensembles
+\end_layout
+
+\begin_layout Description
+Default: [1,1,1]
+\end_layout
+
+\begin_layout Standard
+Number of ensembles used in simulations.
+ The first is the local vector ensemble.
+ The second is the number of serial repeats.
+ The third is the number or parallel repeats.
+ Note that serial and parallel repeats are used for sampling error estimation.
+\end_layout
+
+\begin_layout Itemize
+p.name = [ens1,ens2,ens3]
+\end_layout
+
+\begin_layout Subsubsection
+method
+\end_layout
+
+\begin_layout Description
+Default: 1
+\end_layout
+
+\begin_layout Standard
+The phase-space method, where 1 = generalized P-representation, 2 = Wigner
+ representation, 3 = Husimi (Q) representation
+\end_layout
+
+\begin_layout Itemize
+p.method > 0
+\end_layout
+
+\begin_layout Subsubsection
+r
+\end_layout
+
+\begin_layout Description
+Default: 0
+\end_layout
+
+\begin_layout Standard
+This gives a real squeezing vector that is input.
+ It is expected to be of length at least 
+\begin_inset Formula $p.N$
+\end_inset
+
+.
+ If smaller, it will be expanded to length 
+\begin_inset Formula $p.N$
+\end_inset
+
+.
+ The entries with index greater than 
+\begin_inset Formula $p.N$
+\end_inset
+
+ are set to zero.
+ Can be replaced by a function call for large quantities of data.
+\end_layout
+
+\begin_layout Itemize
+p.r 
+\end_layout
+
+\begin_layout Subsubsection
+eps
+\end_layout
+
+\begin_layout Description
+Default: 0
+\end_layout
+
+\begin_layout Standard
+This gives a real decoherence vector that is input.
+ It is expected to be of length at least 
+\begin_inset Formula $p.N$
+\end_inset
+
+.
+ If smaller, it will be expanded to length 
+\begin_inset Formula $p.N$
+\end_inset
+
+.
+ The values should such that 
+\begin_inset Formula $0\le p.eps\le1$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+p.eps 
+\end_layout
+
+\begin_layout Subsubsection
+t
+\end_layout
+
+\begin_layout Description
+Default: 1
+\end_layout
+
+\begin_layout Standard
+This gives a real transmission vector that is input.
+ It is expected to be of length 
+\begin_inset Formula $p.M$
+\end_inset
+
+.
+ If smaller, it will be expanded to length 
+\begin_inset Formula $p.M$
+\end_inset
+
+.
+ The entries with index greater than 
+\begin_inset Formula $p.M$
+\end_inset
+
+ are set to zero.
+ This allows corrections to be made to the measured transmission matrix.
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $p.t\le1$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Subsubsection
+re
+\end_layout
+
+\begin_layout Description
+Default: 0
+\end_layout
+
+\begin_layout Standard
+This gives a real recycling amplitude.
+ It is expected to be of length 
+\begin_inset Formula $p.M$
+\end_inset
+
+.
+ If smaller, it will be expanded to length 
+\begin_inset Formula $p.M$
+\end_inset
+
+.
+ The entries with index greater than 
+\begin_inset Formula $p.M$
+\end_inset
+
+ are set to zero.
+ This allows previous amplitudes to be recycled.
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $p.re\le1$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Subsubsection
+observe
+\end_layout
+
+\begin_layout Description
+Default: {@(a,p) mean(real(a),2)}
+\end_layout
+
+\begin_layout Standard
+Cell array of function handles to generate the observable phase-space averages.
+ A large number of functions equivalent to commonly used hermitian operators
+ are available.
+\end_layout
+
+\begin_layout Itemize
+p.observe = {@function,..}
+\end_layout
+
+\begin_layout Subsubsection
+compare
+\end_layout
+
+\begin_layout Description
+Default: []
+\end_layout
+
+\begin_layout Standard
+Cell array of function handles to generate the comparison data.
+ A large number of functions equivalent to common hermitian operators are
+ available for analytically known cases..
+\end_layout
+
+\begin_layout Itemize
+p.compare = {@function,..}
+\end_layout
+
+\begin_layout Subsection
+xQSim secondary parameters
+\end_layout
+
+\begin_layout Standard
+The following parameters are available also.
+ These less frequently used xQSim input parameters are listed here.
+ Also, an  xGraph label parameter is included for reference.
+ This is marked with a '*', and is 
+\emph on
+only
+\emph default
+ used by xGraph.
+ These can all be omitted for simulation purposes, unless they are needed
+ for special purposes like doing the 
+\begin_inset Formula $\chi^{2}$
+\end_inset
+
+ fitting.
+ Note that they have defaults in all cases.
+\end_layout
+
+\begin_layout Subsubsection
+name
+\end_layout
+
+\begin_layout Description
+Default: ' '
+\end_layout
+
+\begin_layout Standard
+Name used to label simulation, usually corresponding to the equation or
+ problem solved, and will be passed to the xGraph program if it is used.
+\end_layout
+
+\begin_layout Itemize
+p.name = 'your project name'
+\end_layout
+
+\begin_layout Subsubsection
+print
+\end_layout
+
+\begin_layout Description
+Default: 1
+\end_layout
+
+\begin_layout Standard
+Print flag for output information while running xQSim.
+ If ``print = 0``, most output is suppressed, while ``print = 1`` displays
+ a progress report, and ``print = 2`` also generates a readable summary
+ of the parameters as a record.
+\end_layout
+
+\begin_layout Itemize
+p.print >= 0
+\end_layout
+
+\begin_layout Subsubsection
+pnames
+\end_layout
+
+\begin_layout Description
+Default: {’+P ’,’W ’,’Q ’}
+\end_layout
+
+\begin_layout Standard
+Cell vector of names used to label the phase-space representation, to allow
+ future expansion or changes.
+ Normally is not changed from default and can be omitted.
+\end_layout
+
+\begin_layout Itemize
+p.pnames = {'your favorite method'}
+\end_layout
+
+\begin_layout Subsubsection
+*olabels
+\end_layout
+
+\begin_layout Description
+Default: {'a', ...}
+\end_layout
+
+\begin_layout Standard
+Cell array of labels for the graph axis observables and functions.
+ These are text labels that are used on the graph axes.
+ The default value is ``'a_1'`` if the default observable is used, otherwise
+ it is blank.
+ This is overwritten by any subsequent label input when the graphics program
+ is run.
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Itemize
+p.olabels{n} = 'string'
+\end_layout
+
+\begin_layout Subsubsection
+Tname
+\end_layout
+
+\begin_layout Description
+Default: matrix(0)
+\end_layout
+
+\begin_layout Standard
+Name used to label type of network matrix.
+ Usually it is returned by the matrix function to give the default name.
+ However, other matrix names can be entered here.
+\end_layout
+
+\begin_layout Itemize
+p.Tname = 'your transmission matrix name'
+\end_layout
+
+\begin_layout Subsubsection
+gen
+\end_layout
+
+\begin_layout Description
+Default: @qgen
+\end_layout
+
+\begin_layout Standard
+Name of network quantum noise function.
+ The default qgen function is used for GBS, and in this case, just omit
+ 
+\begin_inset Formula $gen$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+p.qgen = @yourgenerator
+\end_layout
+
+\begin_layout Subsubsection
+graphs
+\end_layout
+
+\begin_layout Description
+Default: number of observables
+\end_layout
+
+\begin_layout Standard
+Number of distinct output averages calculated, normally set to the default
+ value of the number of observe functions.
+ This allows a reduced data output if required.
+ This can be completely omitted if not required.
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $p.graphs>0$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+counts
+\end_layout
+
+\begin_layout Description
+Default: 0
+\end_layout
+
+\begin_layout Standard
+Used to define the total counts for calculating count numbers and minimum
+ count cutoffs when there is experimental data on experimental count probabiliti
+es.
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $p.counts>0$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+mincount
+\end_layout
+
+\begin_layout Description
+Default: 0
+\end_layout
+
+\begin_layout Standard
+Used to set a lower bound on calculations for chi-square fits, when there
+ is experimental data on experimental count probabilities.
+ A typical value here is 
+\begin_inset Formula $10$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $p.mincount>0$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+cutoff
+\end_layout
+
+\begin_layout Description
+Default: -1E-100
+\end_layout
+
+\begin_layout Standard
+Used to define a lower cutoff, especially for probability data, where a
+ small positive value, eg 
+\begin_inset Formula $10^{-7}$
+\end_inset
+
+, should be used.
+ This is useful for log graphs and 
+\begin_inset Formula $\chi^{2}$
+\end_inset
+
+ fits.
+ 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $p.cutoff$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+mincount
+\end_layout
+
+\begin_layout Description
+Default: 0
+\end_layout
+
+\begin_layout Standard
+Used to set a lower bound on calculations for 
+\begin_inset Formula $\chi^{2}$
+\end_inset
+
+ fits, when there is experimental data on experimental count probabilities.
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $p.mincount>0$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "Drummond2021"
+literal "false"
+
+\end_inset
+
+P.
+ D.
+ Drummond, B.
+ Opanchuk, A.
+ Dellios, M.
+ D.
+ Reid, Simulating complex networks in phase space: Gaussian boson sampling,
+ arXiv:2102.10341.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "Zhong2020"
+literal "false"
+
+\end_inset
+
+H.-S.
+ Zhong, H.
+ Wang, Y.-H.
+ Deng, M.-C.
+ Chen, L.-C.
+ Peng, Y.-H.
+ Luo, J.
+ Qin, D.
+ Wu, X.
+ Ding, Y.
+ Hu, et al., Science 370, 1460 (2020).
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "Marian1992"
+literal "false"
+
+\end_inset
+
+Paulina Marian, Higher-order squeezing and photon statistics for squeezed
+ thermal states, Phys.
+ Rev.
+ A 45, 2044 (1992) 
+\end_layout
+
+\end_body
+\end_document
