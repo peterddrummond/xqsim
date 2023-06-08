@@ -24,12 +24,12 @@ p.observe =  qprefer(p,'observe',{@(a,p) a});       %Get default observe
 p.pnames  =  qprefer(p,'pnames',{'+P ','W ','Q '}); %phase-space names
 p.method  =  qprefer(p,'method',1);                 %phase-space method
 p.pname  =   qprefer(p,'pname',p.pnames{p.method}); %define current name
-p.gen     =  qprefer(p,'gen',@xqgen);                %Get default gen
+p.qgen     =  qprefer(p,'qgen',@xqgen);             %Get default qgen
 p.observe =  qprefer(p,'observe',{@(a,p) a(1,:)});  %Get default observe
-p.graphs =   qprefer(p,'graphs',length(p.observe)); %Get default graphs
+p.dgraphs =  length(p.observe);                     %Get default graphs
 p.matrix =   qprefer(p,'matrix',@Identity);         %Set matrix function
 p.Tname =    qprefer(p,'Tname',p.matrix(0));        %Default matrix name
-p.print =    qprefer(p,'print',1);                  %Default print mode
+p.verbose =  qprefer(p,'verbose',1);                %Default print mode
 p.ensembles= qprefer(p,'ensembles',[1,1,1]);        %Default ensembles
 p.r =        qprefer(p,'r',0);                      %Default squeezing
 p.counts =   qprefer(p,'counts',0);                 %Default counts
@@ -46,13 +46,11 @@ if s == 1                                           %if initial sequence
 end                                                 %end if initial
 fprintf('\nDataset %d: %s\n',s,p.name);             %print dataset name
 p.rep = rep;                                        %make repeats uniform
-if  length(p.observe) < p.graphs                    %if graphs too large
-    p.graphs =   length(p.observe);                 %reduce graphs
-end                                                 %end if graphs
-p.initialobs{p.graphs+1} =[];                       %set up initial obs
-p.compare{p.graphs+1}=[];                           %initialize comparisons
-p.olabels{p.graphs+1}=[];                           %initialize labels
-for k = 1:p.graphs                                  %loop over data types
+
+p.initialobs{p.dgraphs+1} =[];                       %set up initial obs
+p.compare{p.dgraphs+1}=[];                           %initialize comparisons
+p.olabels{p.dgraphs+1}=[];                           %initialize labels
+for k = 1:p.dgraphs                                    %loop over data types
     if ~isempty(p.initialobs{k})                    %requires initialization?
         p = p.initialobs{k}(p);                     %initialize  data type
     end                                             %end if requires
@@ -85,7 +83,7 @@ p.eps(p.M+1:end) = [];                              %reset size
 % INITIALIZE DATA SIZES
 
 a = zeros(2*p.M,p.ensembles(1));                    %initialize a
-for k = 1:p.graphs                                  %loop over data types
+for k = 1:p.dgraphs                                 %loop over data types
     p.k = k;                                        %store graph number
     D1 = p.observe{k}(a,p);                         %get vector average
     sz = size(D1);                                  %get data size          
@@ -105,7 +103,7 @@ end                                                 %end loop over types
 
 % PRINT INPUTS IF IN VERBOSE MODE
  
-if p.print >=2                                      %if verbose print flag
+if p.verbose >=2                                      %if verbose print flag
     if s == 1                                       %if initial sequence
       fprintf('\n xqpreferences v1.0 \n');           %print version name
       fprintf('\n Print mode = %d\n',p.print);      %print mode

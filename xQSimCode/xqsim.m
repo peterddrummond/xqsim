@@ -12,21 +12,21 @@ function [es,data,output] = xqsim(input)
 % Thermalized squeezed inputs are input to n channels of an m*m matrix
 % Inputs are specified with a squeezing parameter r, decoherence eps
 % A transmission amplitude t is used to rescale the unitary
-% A recycling amplitude re is used if the fields are recycle for sequences
+% A recycling amplitude re is used if the fields are recycled for sequences
 % Calculates correlations, variances specified in s.observe functions
 % For +P distributions only, it can calculate mode click probabilities. 
 % Analytic comparisons or experimental data, are input in compare functions
 % All output data may include error bars, accessed by the last data index
 % Printing set by print = 0 (terse),  = 1 (normal), = 2 (verbose)
-% Version 1.0 - uses a multiply partitioned output count - see xQSim manual
+% Version 2.0 - uses a multiply partitioned output count - see xQSim manual
 % Data output compatible with the xGRAPH multidimensional graphics program
 %   Licensed by Peter D. Drummond, (2021) - see License.txt 
 
 % INITIALIZE PARAMETERS AND DATA
 
 tic();                                           %start timer
-fprintf('\n xqsim, v1.0 \n');                 %print version
-output = xqpreferences(input);                    %include default inputs
+fprintf('\n xqsim, v2.0 \n');                    %print version
+output = xqpreferences(input);                   %include default inputs
 l = length(output);                              %get sequence length 
 p = output{1};                                   %get first structure
 pens = p.ensembles(3); ns = p.ensembles(1);      %store ensembles
@@ -34,7 +34,7 @@ fprintf('\n%d repeats of %d samples\n',p.rep,ns);%print ensembles
 
 %SIMULATE WITH PARALLEL OR SERIAL ENSEMBLE FOR DATA AVERAGES
 
-data(1:l) =  {cell(p.graphs,1)};                 %initialize graph cell
+data(1:l) =  {cell(p.dgraphs,1)};                %initialize graph cell
 if pens <= 1                                     %if no parallel ensembles
         data = xqensemble(1,output);              %compute ensemble data
 else                                             %else parallel ensembles
@@ -54,7 +54,7 @@ for s = 1:l                                      %loop over sequence
   fprintf('%s phase-space method\n',p.pname);    %method used
   fprintf('%d x %d %s matrix\n',p.M,p.M,p.Tname);%matrix used
   fprintf('Input size = %d\n',p.N);              %input size
-  for n = 1:p.graphs                             %loop over data type
+  for n = 1:p.dgraphs                             %loop over data type
     esk = 0; edk = 0; ecmpk = 0;                 %initialize k errors
     fprintf('\nDataset %d, Graph %d, %s\n',s,n,p.olabels{n}); % k,s
     sz = size(data{s}{n});                       %get size of the data 
@@ -97,6 +97,12 @@ for s = 1:l                                      %loop over sequence
         fprintf('Max comp. error = %d \n',ecmpk);%print k comparison error
         fprintf('Chi-square points = %d \n',nzk);%print k comparison points
         fprintf('Chi-square error = %d\n',chk);  %print k chi-square error
+        if nzk >= 10
+            whchk = (chk/nzk)^(1/3);             %wilson-hilferty(WH) transform
+            whvar = 2/(9*nzk);                   %WH variance
+            Zst = (whchk - (1-whvar))./sqrt(whvar);%compute WH Z-statistic
+            fprintf('WH Z-statistic = %d\n',Zst);%print WH Z-statistic
+        end
         data{s}{n}  = cat(2,data{s}{n},cp);      %combine data for xgraph;
         sz(end)  = 6;                            %update data size
     end                                          %end check comparison

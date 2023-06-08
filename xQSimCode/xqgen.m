@@ -9,7 +9,8 @@ function a = xqgen(a,p)
 % Output is a = alp;bet, including decoherence and transmission factors
 % First a matrix index gives the channel count
 % Second a matrix index gives the index of the parallel ensemble
-% *Licensed by Peter D. Drummond, (2021) - see License.txt, xQSim manual  
+% *Licensed by Peter D. Drummond & Alexander S. Dellios, (2023) 
+% - see License.txt, xQSim manual  
 
 %GENERATE PHASE-SPACE SAMPLES FOR ANY ORDERING
 
@@ -31,6 +32,12 @@ beti= tr.*(x-1i*y)+re.*a(1+p.M:2*p.M,:);         %input conjugate noise
 %ADD OUTPUT LOSSES, TRANSFORMATIONS, EXTRA QUANTUM NOISE
 
 T   = p.matrix.*t;                               %corrected transmission
+
+if isfield(p,'permute') == 1                     %check for  permutation
+    T = T(p.permute,:);                          %apply random permutation 
+end                                              %end permuation check
+
+
 alp = T*alpi;                                    %matrix transformation                        
 bet = conj(T)*beti;                              %conjugate transformation 
 if  sm > 0                                       %if not normal ordered

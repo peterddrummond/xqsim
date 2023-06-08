@@ -12,7 +12,7 @@ ens =   p.ensembles(1);                          %vector ensemble
 d  =    cell(ls);                                %cell for average data
 for s = 1:ls                                     %loop over input sequence
 p = input{s};                                    %set the parameter struct
-    for k = 1:p.graphs                           %loop over data types
+    for k = 1:p.dgraphs                          %loop over data types
       d{s}{k} = zeros(p.sz{s}{k});               %initialize averages
     end                                          %end loop over data types
 end
@@ -20,7 +20,7 @@ end
 % LOOP OVER  SERIAL ENSEMBLE  FOR ENSEMBLE AVERAGES
 
 for r1 = 1:p.ensembles(2)                        %loop on serial ensembles
-  if p.print > 0
+  if p.verbose > 0
     fprintf('Ensemble %d\n',(r1-1)*ensp+r);      %print ensemble numbers
   end
   a = zeros(2*p.M,p.ensembles(1));               %set amplitudes to zero
@@ -39,17 +39,17 @@ for r1 = 1:p.ensembles(2)                        %loop on serial ensembles
     p.seq = s;                                   %store sequence number
     for cy = 1:p.cyc                             %loop over cycles
       p.cy = cy;                                 %store cycle number
-      a = p.gen(a,p);                            %get samples
+      a = p.qgen(a,p);                           %get samples
            
 % LOOP OVER THE OBSERVABLES FOR ENSEMBLE AVERAGES
 
-      for k = 1:p.graphs                         %loop over data types
+      for k = 1:p.dgraphs                        %loop over data types
         p.k = k;                                 %store graph number
         D1 = p.observe{k}(a,p);                  %get vector average
         D = reshape(real(D1),p.els1{s}{k});      %reshape data 
         d{s}{k} = reshape(d{s}{k},p.els{s}{k});  %reshape output 
-        d{s}{k}(cy,:,1) = d{s}{k}(cy,:,1) + D/p.rep;     %mean data
-        d{s}{k}(cy,:,2) = 0;                             %reserved
+        d{s}{k}(cy,:,1) = d{s}{k}(cy,:,1) + D/p.rep;%mean data
+        d{s}{k}(cy,:,2) = 0;                     %reserved
         d{s}{k}(cy,:,3) = d{s}{k}(cy,:,3) + D.^2/p.rep;  %mean square
         d{s}{k} = reshape(d{s}{k},p.sz{s}{k});   %reshape data
       end                                        %end loop over data type
