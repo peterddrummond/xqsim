@@ -1,4 +1,4 @@
-function C = km2c(s)
+function C = Km2c(s)
 % C = KM2C(a,p); generates comparison numbers of all combinations of clicks
 % per two channels. Assumes output unchanged from input. eg, identity
 % matrix or uniform thermal+unitary

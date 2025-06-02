@@ -1,6 +1,6 @@
-function C = delprod(a,p)
-% C = delprod(a,p) generates the product of u,v standard deviations
+function C = Delprod(a,p)
+% C = Delprod(a,p) generates the product of u,v standard deviations
 % follows conventions from the entanglement sction
 
-C = delv(a,p).*delu(a,p);
+C = Delv(a,p).*Delu(a,p);
 end                                              %end du function

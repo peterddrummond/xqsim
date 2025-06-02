@@ -6,5 +6,5 @@ if isnumeric(p)  && p <= 0
     U =  'identity';
     return;
 end
-U = eye(p.M);
+U = eye(p.modes);
 end

@@ -1,6 +1,6 @@
-function C = delprod2(a,p)
-% C = delprod(a,p) generates the product of u,v variances
+function C = Delprod2(a,p)
+% C = Delprod(a,p) generates the product of u,v variances
 % follows conventions from the entanglement sction
 
-C = delv2(a,p).*delu2(a,p);
+C = Delv2(a,p).*Delu2(a,p);
 end                                              %end du function

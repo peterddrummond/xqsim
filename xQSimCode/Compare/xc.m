@@ -1,5 +1,5 @@
-function C = xc(p)
-% C = XC(a,p); generates comparison Y quadratures per channel
+function C = Xc(p)
+% C = XC(a,p); generates comparison X quadratures per channel
 % assumes output unchanged from input. 
 % eg, identity matrix or uniform thermal+unitary
 

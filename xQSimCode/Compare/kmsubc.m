@@ -1,4 +1,4 @@
-function C = kmsubc(s)
+function C = Kmsubc(s)
 % C = KMSUBC(a,p); Generates all a subset of all possible combinations of
 % output mode click correlation moments for sequential modes. This is
 % done for graphical simplificity. Assumes output unchanged from input. 

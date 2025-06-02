@@ -6,7 +6,7 @@ if isnumeric(p)  && p <= 0
     U =  'beamsplitter';
     return;
 end
-M=p.M;
+M=p.modes;
 r = zeros(1,M);
 t = zeros(1,M);
 r1 = zeros(1,M+1);

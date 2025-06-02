@@ -1,4 +1,4 @@
-function C = km3c(s)
+function C = Km3c(s)
 % C = KM3C(a,p); generates comparison numbers of all combinations of clicks
 % per three channels. Assumes output unchanged from input. eg, identity
 % matrix or uniform thermal+unitary

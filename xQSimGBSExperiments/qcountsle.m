@@ -113,41 +113,41 @@ while bits == p.bits && record < maxrecords
         end
         K2 = K2 + A1;
         
-        %All combinations of third order correlations
-        A2 = zeros(nchoosek(p.M,3),1);
-        s = 1;
-        for j = 1:p.M-2
-            for k = j:p.M-2
-                for i = k:p.M-2
-                    A2(s) = click(j).*click(k+1,:).*click(i+2,:);
-                    s = s+1;
-                end 
-            end
-        end
-        K3 = K3 + A2;
+%         %All combinations of third order correlations
+%         A2 = zeros(nchoosek(p.M,3),1);
+%         s = 1;
+%         for j = 1:p.M-2
+%             for k = j:p.M-2
+%                 for i = k:p.M-2
+%                     A2(s) = click(j).*click(k+1,:).*click(i+2,:);
+%                     s = s+1;
+%                 end 
+%             end
+%         end
+%         K3 = K3 + A2;
+%         
+%         
+%         %Subset of all second order correlations for graphical simplicity
+%         cln  = length(click);       %Click length
+%         for i = 1:cln-1
+%             K2s(i) = K2s(i) + prod(click(i:i+1));
+%         end 
+%         
+%         %Subset of all third order correlations for graphical simplicity
+%         for i = 1:cln-2
+%             K3s(i) = K3s(i) + prod(click(i:i+2));
+%         end 
+%         
+%         %Subset of all fourth order correlations for graphical simplicity
+%         for i = 1:cln-3
+%             K4s(i) = K4s(i) + prod(click(i:i+3));
+%         end        
         
         
-        %Subset of all second order correlations for graphical simplicity
-        cln  = length(click);       %Click length
-        for i = 1:cln-1
-            K2s(i) = K2s(i) + prod(click(i:i+1));
-        end 
         
-        %Subset of all third order correlations for graphical simplicity
-        for i = 1:cln-2
-            K3s(i) = K3s(i) + prod(click(i:i+2));
-        end 
-        
-        %Subset of all fourth order correlations for graphical simplicity
-        for i = 1:cln-3
-            K4s(i) = K4s(i) + prod(click(i:i+3));
-        end        
-        
-        
-        
-        for i = 1:K
-            Kc(i)     = Kc(i)+ prod(click(1:i));
-        end
+%         for i = 1:K
+%             Kc(i)     = Kc(i)+ prod(click(1:i));
+%         end
         c             = 1+sum(click);
         c21           = 1+sum(click(1:(0.5*p.M)));
         c22           = 1+sum(click((0.5*p.M+1):p.M));
@@ -156,17 +156,17 @@ while bits == p.bits && record < maxrecords
         c43           = 1+sum(click((0.5*p.M+1):(0.75*p.M)));
         c44           = 1+sum(click((0.75*p.M+1):p.M));
         
-        c61            = 1+sum(click(1:(1/6*p.M)));
-        c62            = 1+sum(click((1/6*p.M+1):(2/6*p.M)));
-        c63            = 1+sum(click((2/6*p.M+1):(3/6*p.M)));
-        c64            = 1+sum(click((3/6*p.M+1):(4/6*p.M)));
-        c65            = 1+sum(click((4/6*p.M+1):(5/6*p.M)));
-        c66            = 1+sum(click((5/6*p.M+1):p.M));
+%         c61            = 1+sum(click(1:(1/6*p.M)));
+%         c62            = 1+sum(click((1/6*p.M+1):(2/6*p.M)));
+%         c63            = 1+sum(click((2/6*p.M+1):(3/6*p.M)));
+%         c64            = 1+sum(click((3/6*p.M+1):(4/6*p.M)));
+%         c65            = 1+sum(click((4/6*p.M+1):(5/6*p.M)));
+%         c66            = 1+sum(click((5/6*p.M+1):p.M));
         
         count1(c,1) = count1(c,1)+1; 
         count2(c21,c22) = count2(c21,c22)+1;
         count4(c41,c42,c43,c44) = count4(c41,c42,c43,c44)+1;
-        count6(c61,c62,c63,c64,c65,c66) = count6(c61,c62,c63,c64,c65,c66) +1;
+%        count6(c61,c62,c63,c64,c65,c66) = count6(c61,c62,c63,c64,c65,c66) +1;
         valid = valid+1;
     end 
 end 
@@ -175,50 +175,67 @@ fprintf(' Total records = %d\n',record);
 fprintf(' Valid records = %d\n',valid); 
 
 n    = n/valid;
-K2s = K2s/valid;
-K3s = K3s/valid;
-K4s = K4s/valid;
+% K2s = K2s/valid;
+% K3s = K3s/valid;
+% K4s = K4s/valid;
 
-Kc   = Kc/valid;
+% Kc   = Kc/valid;
 K2   = K2/valid;
-K3   = K3/valid;
+%K3   = K3/valid;
 prob1 = count1/valid;
 prob2 = count2/valid;
 prob4 = count4/valid;
-prob6 = count6/valid;
+% prob6 = count6/valid;
 
 for k = 1:p.M
     fprintf(' mean clicks (%d)  = %d\n', k,n(k)); 
 end
-for k = 1:K
-    fprintf(' click correlations (%d)  = %d\n', k,Kc(k)); 
-end
+% for k = 1:K
+%     fprintf(' click correlations (%d)  = %d\n', k,Kc(k)); 
+% end
 for k = 1:p.M+1
     fprintf(' probability(%d)  = %d\n', k-1,prob1(k)); 
 end
+
+%Start two-mode cumulant test
+Cm2 = zeros(size(K2));
+nprod = zeros(size(K2));
+
+s = 1;
+for j=1:p.M-1
+    for k=j:p.M-1
+        nprod(s) = n(j).*n(k+1);
+        s = s+1;
+    end
+end
+Cm2 = K2 - nprod;
+%End two-mode cumulant test
 
 Count = valid;                     % total data records analysed
 
 Nc = n; 
 save('expk','Nc','Count');
 
-K2sp = K2s;
-save('expk2ms','K2sp','Count');
-
-K3sp = K3s;
-save('expk3ms','K3sp','Count');
-
-K4sp = K4s;
-save('expk4ms','K4sp','Count');
-
-Kp = Kc;
-save('expkm','Kp','Count');
-
+% K2sp = K2s;
+% save('expk2ms','K2sp','Count');
+% 
+% K3sp = K3s;
+% save('expk3ms','K3sp','Count');
+% 
+% K4sp = K4s;
+% save('expk4ms','K4sp','Count');
+% 
+% Kp = Kc;
+% save('expkm','Kp','Count');
+% 
 K2p = K2;
 save('expk2m','K2p','Count');
 
-K3p = K3;
-save('expk3m','K3p','Count');
+Cm2p = Cm2;
+save('expk2cm','Cm2p','Count');
+
+% K3p = K3;
+% save('expk3m','K3p','Count');
 
 Cp1 = prob1;
 save('expk1','Cp1','Count');
@@ -228,9 +245,9 @@ save('expk2','Cp2','Count');
 
 Cp4 = prob4;
 save('expk4','Cp4','Count');
-
-Cp6 = prob6;
-save('expk6','Cp6','Count');
+ 
+% Cp6 = prob6;
+% save('expk6','Cp6','Count');
 
 fprintf(' Total data records analysed = %d\n', Count);
 fprintf(' time taken = %d\n', toc()); 

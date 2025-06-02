@@ -6,7 +6,7 @@ if isnumeric(p)  && p <= 0
     U =  'complex unitary';
     return;
 end
-U = (randn(p.M) + 1i*randn(p.M))/(sqrt(2));
+U = (randn(p.modes) + 1i*randn(p.modes))/(sqrt(2));
 [U,R] = qr(U);
 D = diag(R);
 ph = D./abs(D);
