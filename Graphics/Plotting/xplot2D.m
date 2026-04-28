@@ -15,7 +15,7 @@ function [] =  xplot2D(t,dat,n,ax,g)
 %   If the column sizes are different, excess lines are truncated
 %   The value of g.minbar{n} is the minimum relative error-bar 
 %   Error bars are  plotted if  relative error > 'g.minbar{n}'
-%   A limit of g.cutoff{n} is used as a lower limit for log graphs.
+%   A limit of g.graphcutoffs{n} is used as a lower limit for log graphs.
 %   An input of g.logs{n} is used to to determine whether linear or log.
 %   Horizontal error-bars are allowed, with sampling + error bars combined
 %   The cell array 'g.linestyle{n}' gives the line-styles that are used.
@@ -67,8 +67,8 @@ for s =-1:2:1                                 % Loop over sampling lines
     max_err = max(dat(j,:,2));
     rel_err = max_err/(range+1.e-100);        % Prevent divide by zero
     rel_et = 0;
-    eu =reshape(dat(j,:,2),1,nd(2));          % Set upper error-bar
-    y =da+s*reshape(dat(j,:,3),1,nd(2));      % Include sampling-error  
+    eu = reshape(dat(j,:,2),1,nd(2));         % Set upper error-bar
+    y  = da+s*reshape(dat(j,:,3),1,nd(2));    % Include sampling-error
     el = y-eu;                                % compute lower eb location
     el = y-el;                                % compute lower eb
   end                                         % end if j within data range

@@ -18,23 +18,23 @@ p.tr         = 0.5*ones(1,p.modes);              %transmission
 I            = ones(1,p.modes/5);                %identity vector
 p.sqz        = [I/4,2*I,4*I,I/2,I];              %nonuniform squeezing
 p.thermal    = zeros(1,p.modes);                 %decoherence factor 
-p.correl{4}  = 1:5;                              %correlation order 
-p.correl{6}  = 1:5;                              %click order 
+p.part{4}    = {1:5};                              %correlation order 
+p.part{6}    = {1:5};                              %click order 
 p.part{7}    = p.modes;                          %One-fold partititon 
 p.part{8}    = p.modes/2*[1,1];                  %Two-fold partititon    
 p.part{9}    = p.modes/4*[1,1,1,1];              %Four-fold partition
-p.ensembles  = [10000,10,12];                      %repeats for errors
+p.ensembles  = [1000,10,12];                      %repeats for errors
 p.cutoff     = 1.e-6;
-p.observe    = {@Np,@X2,@Y2,@Nm,@K,@Km,@K1,@Kn,@Kn};
-p.compare    = {@Npc,@X2c,@Y2c,@Nmc,@Kc,@Kmc,@K1c,@Knc,@Knc};
+p.observe    = {@Np,@X2,@Y2,@Nm,@K,@Km,@Kn,@Kn,@Kn};
+p.compare    = {@Npc,@X2c,@Y2c,@Nmc,@Kc,@Kmc,@Knc,@Knc,@Knc};
 p.glabels    = {{{},'Mode j'},{{},'Mode j'},{{},'Mode j'},{{},'Order'},...
                {{},'Mode j'},{{},'Clicks m'},{{},'Clicks m_1','Clicks m_2'},...
                {{},'Clicks m_1','Clicks m_2','Clicks m_3','Clicks m_4'}};
 p.olabels    = {'<n>','<x^2>','<y^2>','<n_1...n_j>','<G^{(1)}>',...
                '<G^{(n)}>','G_1(m)','G_2(m)','G_4(m)'};
 p.diffplot   = {2,2,2,2,2,2,2,2,2};
-p.xk{4}      = p.correl(4);
-p.xk{6}      = p.correl(6);
+p.xk{4}      = p.part{4};
+p.xk{6}      = p.part{6};
 p.xk{7}      = {0:p.modes};
 p.xk{8}      = {0:p.modes/2,0:p.modes/2};
 p.xk{9}      = {0:p.modes/4,0:p.modes/4,0:p.modes/4,0:p.modes/4};

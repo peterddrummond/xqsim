@@ -18,7 +18,7 @@ limits = g.limits{n};                    %%Get n-th plot limits
 logs = g.logs{n};                        %%Get n-th plot log switches
 sz1 = length(limits);                    %%Get length of plot limits
 lx = length(ax);                         %%Get length of axis vector
-axis = gca;                              %%Get current axis handle
+axis = gca();                            %%Get current axis handle
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   FIRST COORDINATE PLOT LIMITS       
 

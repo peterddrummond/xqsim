@@ -42,7 +42,7 @@ for s = 1:sequence                               %%loop over sequence
     input{s}.gpoints = sz;                       %%store data size
 end                                              %%end loop over sequence 
 input = xgpreferences(input,fileinput);          %%get 'input' defaults
-xpr(1,input{1},'\nxGRAPH, v4.1\n');              %%version name
+xpr(1,input{1},'\nxGRAPH, v4.2\n');              %%version name
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  LOOP OVER INPUT SEQUENCE
 %
@@ -122,8 +122,8 @@ for s = 1:sequence                               %%Loop over sequence
          dl = zeros([gp1*comp,6]);               %%initialize differences
          d(:,5:6) = d(:,5:6) - d(:,4);           %%restore compare errors
          if logdat                               %%if logs + comparisons
-             d(:,1) = max(d(:,1),in.graphcutoffs{n}); %%implement data cutoff
-             d(:,4) = max(d(:,4),in.graphcutoffs{n}); %%implement comp cutoff
+             d(:,1) = max(d(:,1),in.cutoffs{n}); %%implement data cutoff
+             d(:,4) = max(d(:,4),in.cutoffs{n}); %%implement comp cutoff
          end                                     %%end if logs
          gp6 = [gp1,comp,6];                     %%get old array sizes         
          dl(:,1) = d(:,1) - d(:,4);              %%get differences

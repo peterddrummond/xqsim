@@ -1,7 +1,7 @@
 function C = Kmc(p)
 % C = KMC(p); generates comparison O-th order click probability 
 
-O = p.correl{p.noutput};                                    %list of moments
+O = p.part{p.noutput}{1};                                    %list of moments
 Ol = length(O);                                  %length of graph axis
 n = (sinh(p.sqz').*p.tr').^2;
 m = ((1-p.thermal').*cosh(p.sqz').*sinh(p.sqz')).*(p.tr').^2;

@@ -15,9 +15,9 @@ p.name       = sprintf('+P uniformsq, M=%d, Pa=%d',p.modes,p.part{1});
 p.tr         = 0.5;                              %transmission
 p.sqz        = ones(1,20);                       %uniform squeezing                               %decoherence factor
 p.cutoff     = 1.e-6;                            %chi-2 cutoff
-p.ensembles  = [10000,100,12];                   %repeats for errors
-p.observe    = {@N1};                            %total number probability
-p.compare    = {@N1lsc};                         %exact comparison
+p.ensembles  = [1000,100,12];                    %repeats for errors
+p.observe    = {@Nn};                            %total number probability
+p.compare    = {@Nnslc};                         %exact comparison
 p.glabels    = {{'Counts m'}};                   %graphics x-label
 p.olabels    = {'P(m)'};                         %graphics y-label
 p.xk{1}      = {0:p.Max};                        %computed counts

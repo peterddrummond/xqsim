@@ -10,7 +10,7 @@ if p.phase ~= 1                                  %check method is OK
     error('xqsim supports click probabilities only for +P method = 1');
 end                                              %end check method is OK
 ens = size(a,2);
-O = p.correl{p.nobserve};                        %store moment vector    
+O = p.part{p.nobserve}{1};                        %store moment vector    
 Ol = length(O);                                  %store output length                 
 n = a(1:p.modes,:).*a(p.modes+1:2*p.modes,:);    %get normal ordered number
 k  = 1-exp(-n);                                  %click projector

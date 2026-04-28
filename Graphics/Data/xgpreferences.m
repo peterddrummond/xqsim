@@ -102,6 +102,7 @@ for s = 1:sequence                               %%loop over sequence
   in.compare =    xprefer(in,'compare',dgraphs,{''});
   in.olabels =    xprefer(in,'olabels',dgraphs,{' '});
   in.mincount  =  xprefer(in,'mincount',1,10);
+  in.glabels =    xprefer(in,'glabels',dgraphs,{[]});  %%Axis labels
   in.errors =     xprefer(in,'errors',1,0);      %%Number of error fields
   in.savefig  =   xprefer(in,'savefig',1,0);     %%Saved figures
   in.savegraph =  xprefer(in,'savegraph',1,0);   %%Saved graphics
@@ -125,6 +126,7 @@ for s = 1:sequence                               %%loop over sequence
       in.headers{n} = [in.name,stn,in.headers{n}];%% Add name to header
     end
     in.xfunctions{n}{maxd}=[];
+    in.glabels{n} = xmcell(in.glabels{n});
     in.glabels{n}{maxd}=[];
     in.xk{n}{maxd} = [];
     in.logs{n}{maxd} = [];

@@ -13,17 +13,17 @@ function C = Kmsub(a,p)
 if p.phase ~= 1                                 %check method is OK     
     error('qSIM supports click probabilities only for +P method = 1');
 end                                              %end check method is OK
-               
+ens = size(a,2);               
 n = a(1:p.modes,:).*a(p.modes+1:2*p.modes,:);                %get normal ordered number
 k  = 1-exp(-n);
 
 % Compute correlations
 
-Ord = p.correl{p.nobserve} - 1;
+Ord = p.CO{p.nobserve} - 1;
 NM = p.modes - Ord;
 
-C = zeros(NM, p.ensembles(1));
-
+%C = zeros(NM, p.ensembles(1));
+C = zeros(NM, ens);
 for i = 1:NM
     C(i,:) = real(prod(k(i:i+Ord,:),1));
 end 

@@ -4,7 +4,7 @@ function C = Nm(a,p)
 % Duplicate mode indices are not allowed, unless normal-ordered
 
 ens = size(a,2);
-O = p.correl{p.nobserve};                        %define correlations
+O = p.part{p.nobserve}{1};                       %define correlations
 Ol = length(O);                                  %length of graph axis
 sm  = (p.phase-1.0)/2;                           %ordering correction
 if p.phase == 1 && size(a,1) >= 2*p.modes        % if positive P
